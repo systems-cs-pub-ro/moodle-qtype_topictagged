@@ -15,3 +15,6 @@ __User stories__:
 |student|Am testul pregătit când dau click pe “Attempt quiz”|nu pierd din timpul alocat testului|
 
 
+__References__
+ - [QType Template](https://github.com/marcusgreen/moodle-qtype_TEMPLATE/)
+ - [Moodle Docs](https://docs.moodle.org/dev/Question_types)
