@@ -17,7 +17,7 @@
  * Contains the helper class for the select missing words question type tests.
  *
  * @package    qtype
- * @copyright  Year Yourname
+ * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -25,14 +25,14 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/question/type/questionbase.php');
 require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
-require_once($CFG->dirroot . '/question/type/YOURQTYPE/question.php');
+require_once($CFG->dirroot . '/question/type/Quiz-manager/question.php');
 /**
- * Unit tests for the YOURQTYPE question definition class.
+ * Unit tests for the Quiz-manager question definition class.
  *
  * @copyright  2012 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_YOURQTYPE_question_test extends advanced_testcase {
+class qtype_Quiz-manager_question_test extends advanced_testcase {
   
       public function test_get_expected_data() {
     }

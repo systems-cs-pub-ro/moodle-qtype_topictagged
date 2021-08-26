@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the editing form for the YOURQTYPENAME question type.
+ * Defines the editing form for the Quiz-manager question type.
  *
  * @package    qtype
- * @subpackage YOURQTYPENAME
- * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
+ * @subpackage Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,13 +29,13 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * YOURQTYPENAME question editing form definition.
+ * Quiz-manager question editing form definition.
  *
- * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
+ * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_YOURQTYPENAME_edit_form extends question_edit_form {
+class qtype_Quiz-manager_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
         //Add fields specific to this question type
@@ -55,6 +55,6 @@ class qtype_YOURQTYPENAME_edit_form extends question_edit_form {
     }
 
     public function qtype() {
-        return 'YOURQTYPENAME';
+        return 'Quiz-manager';
     }
 }

@@ -14,12 +14,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * YOURQTYPENAME setup the ES6 javascript for the question type
+ * Quiz-manager setup the ES6 javascript for the question type
  * https://docs.moodle.org/dev/Javascript_Modules#ES6_Modules_.28Moodle_v3.8_and_above.29
  *
  * @package    qtype
- * @subpackage YOURQTYPENAME
- * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
+ * @subpackage Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /**
