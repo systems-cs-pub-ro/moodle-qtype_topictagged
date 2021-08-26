@@ -15,36 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * YOURQTYPENAME question type  capability definition
+ * Quiz-manager question type  capability definition
  *
- * @package    qtype_YOURQTYPENAME
- * @copyright  20XX Author Name
+ * @package    qtype_Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $addons = [
-    "qtype_YOURQTYPENAME" => [
+    "qtype_Quiz-manager" => [
         "handlers" => [ // Different places where the add-on will display content.
-            'YOURQTYPENAME' => [ // Handler unique name (can be anything).
+            'Quiz-manager' => [ // Handler unique name (can be anything).
                 'displaydata' => [
-                    'title' => 'YOURQTYPENAME question',
-                    'icon' => '/question/type/YOURQTYPENAME/pix/icon.gif',
+                    'title' => 'Quiz-manager question',
+                    'icon' => '/question/type/Quiz-manager/pix/icon.gif',
                     'class' => '',
                 ],
                 'delegate' => 'CoreQuestionDelegate', // Delegate (where to display the link to the add-on).
-                'method' => 'mobile_get_YOURQTYPENAME',
+                'method' => 'mobile_get_Quiz-manager',
                 'offlinefunctions' => [
-                    'mobile_get_YOURQTYPENAME' => [],// function in classes/output/mobile.php
+                    'mobile_get_Quiz-manager' => [],// function in classes/output/mobile.php
                 ], // Function needs caching for offline.
                 'styles' => [
-                    'url' => '/question/type/YOURQTYPENAME/mobile/styles_app.css',
+                    'url' => '/question/type/Quiz-manager/mobile/styles_app.css',
                     'version' => '1.00'
                 ]
             ]
         ],
         'lang' => [
-                    ['pluginname', 'qtype_YOURQTYPENAME'], // matching value in  lang/en/qtype_YOURQTYPENAME
+                    ['pluginname', 'qtype_Quiz-manager'], // matching value in  lang/en/qtype_Quiz-manager
         ],
     ]
 ];

@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question type class for the YOURQTYPENAME question type.
+ * Question type class for the Quiz-manager question type.
  *
  * @package    qtype
- * @subpackage YOURQTYPENAME
- * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
+ * @subpackage Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,21 +31,21 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/type/YOURQTYPENAME/question.php');
+require_once($CFG->dirroot . '/question/type/Quiz-manager/question.php');
 
 
 /**
- * The YOURQTYPENAME question type.
+ * The Quiz-manager question type.
  *
- * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
+ * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_YOURQTYPENAME extends question_type {
+class qtype_Quiz-manager extends question_type {
 
       /* ties additional table fields to the database */
     public function extra_question_fields() {
-        return array('question_YOURQTYPENAME', 'somefieldname','anotherfieldname');
+        return array('question_Quiz-manager', 'somefieldname','anotherfieldname');
     }
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
@@ -66,7 +66,7 @@ class qtype_YOURQTYPENAME extends question_type {
     }
     public function save_question_options($question) {
         global $DB;
-        $options = $DB->get_record('question_YOURQTYPENAME', array('questionid' => $question->id));
+        $options = $DB->get_record('question_Quiz-manager', array('questionid' => $question->id));
         if (!$options) {
             $options = new stdClass();
             $options->questionid = $question->id;
@@ -74,7 +74,7 @@ class qtype_YOURQTYPENAME extends question_type {
             $options->id = $DB->insert_record('question_imageselect', $options);
         }
         $options = $this->save_combined_feedback_helper($options, $question, $question->context, true);
-        $DB->update_record('question_YOURQTYPENAME', $options);
+        $DB->update_record('question_Quiz-manager', $options);
         $this->save_hints($question);
     }
 
@@ -101,7 +101,7 @@ class qtype_YOURQTYPENAME extends question_type {
     }
     
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null) {
-        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_YOURQTYPENAME') {
+        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_Quiz-manager') {
             return false;
         }
         $question = parent::import_from_xml($data, $question, $format, null);
@@ -112,7 +112,7 @@ class qtype_YOURQTYPENAME extends question_type {
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();
-        $gapfillinfo = $pluginmanager->get_plugin_info('question_YOURQTYPENAME');
+        $gapfillinfo = $pluginmanager->get_plugin_info('question_Quiz-manager');
         $output = parent::export_to_xml($question, $format);
         //TODO
         $output .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);

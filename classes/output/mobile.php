@@ -15,41 +15,42 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mobile output class for qtype_YOURQTYPENAME
+ * Mobile output class for qtype_Quiz-manager
  *
- * @package    qtype_YOURQTYPENAME
- * @copyright  2018 YOUR NAME
+ * @package    qtype_Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace qtype_YOURQTYPENAME\output;
+namespace qtype_Quiz-manager\output;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Mobile output class for YOURQTYPENAME question type
+ * Mobile output class for Quiz-manager question type
  *
- * @package    qtype_YOURQTYPENAME
- * @copyright  20XX YOUR NAME
+ * @package    qtype_Quiz-manager
+ * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobile {
 
     /**
-     * Returns the YOURQTYPENAME question type for the quiz the mobile app.
+     * Returns the Quiz-manager question type for the quiz the mobile app.
      *
      * @return void
      */
-    public static function mobile_get_YOURQTYPENAME() {
+    public static function mobile_get_Quiz-manager() {
         global $CFG;
         return [
             'templates' => [
                 [
                     'id' => 'main',
-                    'html' => file_get_contents($CFG->dirroot .'/question/type/YOURQTYPENAME/mobile/qtype-YOURQTYPENAME.html')
+                    'html' => file_get_contents($CFG->dirroot .'/question/type/Quiz-manager/mobile/qtype-Quiz-manager.html')
                     ]
             ],
-            'javascript' => file_get_contents($CFG->dirroot . '/question/type/YOURQTYPENAME/mobile/mobile.js')
+            'javascript' => file_get_contents($CFG->dirroot . '/question/type/Quiz-manager/mobile/mobile.js')
+e?php
         ];
     }
 }

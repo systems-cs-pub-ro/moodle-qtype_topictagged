@@ -16,7 +16,7 @@
 /**
  * support for the mdl35+ mobile app
  * This file is the equivalent of 
- * qtype/YOURQTYPENAME/classes/YOURQTYPENAME.ts in the core app
+ * qtype/Quiz-manager/classes/Quiz-manager.ts in the core app
  * e.g.
  * https://github.com/moodlehq/moodlemobile2/blob/v3.5.0/src/addon/qtype/ddwtos/classes/ddwtos.ts
  */
