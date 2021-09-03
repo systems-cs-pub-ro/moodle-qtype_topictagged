@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'qtype_Quiz-manager', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'qtype_quizmanager', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package    qtype
- * @subpackage Quiz-manager
+ * @subpackage quizmanager
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'Quiz-manager';
-$string['pluginname_help'] = 'Create a Quiz-manager question type with insert question description here.';
-$string['pluginname_link'] = 'question/type/Quiz-manager';
-$string['pluginnameadding'] = 'Adding a Quiz-manager question';
-$string['pluginnameediting'] = 'Editing a Quiz-manager question';
-$string['pluginnamesummary'] = 'A Quiz-manager question type that allows something to be done that can test a student on some understanding.';
+$string['pluginname'] = 'quizmanager';
+$string['pluginname_help'] = 'Create a quizmanager question type with insert question description here.';
+$string['pluginname_link'] = 'question/type/quizmanager';
+$string['pluginnameadding'] = 'Adding a quizmanager question';
+$string['pluginnameediting'] = 'Editing a quizmanager question';
+$string['pluginnamesummary'] = 'A quizmanager question type that allows something to be done that can test a student on some understanding.';
