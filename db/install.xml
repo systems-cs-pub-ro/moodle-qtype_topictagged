@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="question/type/Quiz-manager/db" VERSION="2013070" COMMENT="XMLDB file for Moodle question/type/Quiz-manager"
+<XMLDB PATH="question/type/quizmanager/db" VERSION="2013070" COMMENT="XMLDB file for Moodle question/type/quizmanager"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="question_Quiz-manager" COMMENT="description of table, e.g. options associated overall question">
+    <TABLE NAME="question_quizmanager" COMMENT="description of table, e.g. options associated overall question">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="question"/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references question.id" />

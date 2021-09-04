@@ -15,36 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz-manager question type  capability definition
+ * quizmanager question type  capability definition
  *
- * @package    qtype_Quiz-manager
+ * @package    qtype_quizmanager
  * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $addons = [
-    "qtype_Quiz-manager" => [
+    "qtype_quizmanager" => [
         "handlers" => [ // Different places where the add-on will display content.
-            'Quiz-manager' => [ // Handler unique name (can be anything).
+            'quizmanager' => [ // Handler unique name (can be anything).
                 'displaydata' => [
-                    'title' => 'Quiz-manager question',
-                    'icon' => '/question/type/Quiz-manager/pix/icon.gif',
+                    'title' => 'quizmanager question',
+                    'icon' => '/question/type/quizmanager/pix/icon.gif',
                     'class' => '',
                 ],
                 'delegate' => 'CoreQuestionDelegate', // Delegate (where to display the link to the add-on).
-                'method' => 'mobile_get_Quiz-manager',
+                'method' => 'mobile_get_quizmanager',
                 'offlinefunctions' => [
-                    'mobile_get_Quiz-manager' => [],// function in classes/output/mobile.php
+                    'mobile_get_quizmanager' => [],// function in classes/output/mobile.php
                 ], // Function needs caching for offline.
                 'styles' => [
-                    'url' => '/question/type/Quiz-manager/mobile/styles_app.css',
+                    'url' => '/question/type/quizmanager/mobile/styles_app.css',
                     'version' => '1.00'
                 ]
             ]
         ],
         'lang' => [
-                    ['pluginname', 'qtype_Quiz-manager'], // matching value in  lang/en/qtype_Quiz-manager
+                    ['pluginname', 'qtype_quizmanager'], // matching value in  lang/en/qtype_quizmanager
         ],
     ]
 ];
