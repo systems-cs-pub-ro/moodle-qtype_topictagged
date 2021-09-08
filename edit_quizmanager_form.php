@@ -40,7 +40,25 @@ class qtype_quizmanager_edit_form extends question_edit_form {
     protected function definition_inner($mform) {
         //Add fields specific to this question type
         //remove any that come with the parent class you don't want
-        
+
+        //Add difficulty field
+        $difficultyoptions = array(
+            'multiple' => false,
+            'tags' => true,
+            'noselectionstring' => get_string('setdifficultyempty', 'qtype_quizmanager'),
+        );
+        $mform->addElement('autocomplete', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
+            null, $difficultyoptions);
+
+        //Add tags field
+        $autocompleteoptions = array(
+            'multiple' => true,
+            'tags' => true,
+            'noselectionstring' => get_string('settagsempty', 'qtype_quizmanager'),
+        );
+        $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
+            null, $autocompleteoptions);
+
         // To add combined feedback (correct, partial and incorrect).
         $this->add_combined_feedback_fields(true);
         // Adds hinting features.
