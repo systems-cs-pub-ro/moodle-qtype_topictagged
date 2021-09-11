@@ -32,5 +32,5 @@ $string['pluginnamesummary'] = 'A quizmanager question type that allows somethin
 $string['setdifficulty'] = 'Set difficulty';
 $string['setdifficultyempty'] = 'Enter question difficulty (e.g. easy-hard, 1-5)';
 $string['settags'] = 'Set tags';
-$string['settagsempty'] = '--none--';
+$string['settagsempty'] = 'No tag selected';
 
