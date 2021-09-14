@@ -34,3 +34,18 @@ $string['setdifficultyempty'] = 'Enter question difficulty (e.g. easy-hard, 1-5)
 $string['settags'] = 'Set tags';
 $string['settagsempty'] = 'No tag selected';
 
+$string['randomqnamefromtop'] = 'Faulty random question! Please delete this question.';
+$string['randomqnamefromtoptags'] = 'Faulty random question! Please delete this question.';
+$string['randomqnametags'] = 'Random ({$a->category}, tags: {$a->tags})';
+$string['randomqplusname'] = 'Random ({$a} and subcategories)';
+$string['randomqplusnamecourse'] = 'Random (Any category in this course)';
+$string['randomqplusnamecoursecat'] = 'Random (Any category inside course category {$a})';
+$string['randomqplusnamecoursecattags'] = 'Random (Any category inside course category {$a->category}, tags: {$a->tags})';
+$string['randomqplusnamecoursetags'] = 'Random (Any category in this course, tags: {$a->tags})';
+$string['randomqplusnamemodule'] = 'Random (Any category of this quiz)';
+$string['randomqplusnamemoduletags'] = 'Random (Any category of this quiz, tags: {$a->tags})';
+$string['randomqplusnamesystem'] = 'Random (Any system-level category)';
+$string['randomqplusnamesystemtags'] = 'Random (Any system-level category, tags: {$a->tags})';
+$string['randomqplusnametags'] = 'Random ({$a->category} and subcategories, tags: {$a->tags})';
+
+$string['selectedby'] = '{$a->questionname} selected by {$a->randomname}';
