@@ -36,11 +36,13 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_quizmanager_edit_form extends question_edit_form {
+    private $difficulty = "";
+    private $topic = "";
 
     protected function definition_inner($mform) {
         //Add fields specific to this question type
         //remove any that come with the parent class you don't want
-
+	
         //Add difficulty field
         $difficultyoptions = array(
             'multiple' => false,
@@ -58,11 +60,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         );
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
-
-        // To add combined feedback (correct, partial and incorrect).
-        $this->add_combined_feedback_fields(true);
-        // Adds hinting features.
-        $this->add_interactive_settings(true, true);
     }
 
     protected function data_preprocessing($question) {

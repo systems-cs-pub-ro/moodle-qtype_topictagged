@@ -106,30 +106,17 @@ class qtype_quizmanager extends question_type {
             $form->fromtags = array();
         }
 
-        $form->questiontext = array(
-            'text'   => $form->includesubcategories ? '1' : '0',
-            'format' => 0
-        );
+	$form->questiontext = array(
+		'text'	 => $form->settags[0] . "-" . $form->setdifficulty,
+		'format' => 0
+	);
 
         // Name is not a required field for random questions, but
         // parent::save_question Assumes that it is.
         return parent::save_question($question, $form);
     }
     public function save_question_options($question) {
-	/*
-        global $DB;
-        $options = $DB->get_record('question_quizmanager', array('questionid' => $question->id));
-        if (!$options) {
-            $options = new stdClass();
-            $options->questionid = $question->id;
-            /* add any more non combined feedback fields here *
-            $options->id = $DB->insert_record('question_imageselect', $options);
-        }
-        $options = $this->save_combined_feedback_helper($options, $question, $question->context, true);
-        $DB->update_record('question_quizmanager', $options);
-	$this->save_hints($question);
-     	*/
-        global $DB;
+	global $DB;
 
         // No options, as such, but we set the parent field to the question's
         // own id. Setting the parent field has the effect of hiding this
@@ -142,6 +129,9 @@ class qtype_quizmanager extends question_type {
         $category = $DB->get_record('question_categories',
                 array('id' => $question->category), '*', MUST_EXIST);
         $updateobject->name = $this->question_name($category, $question->includesubcategories, $question->fromtags);
+	$updateobject->topic = $question->settags[0];
+	$updateobject->difficulty = $question->setdifficulty;
+
         return $DB->update_record('question', $updateobject);
  
     }
@@ -151,10 +141,20 @@ class qtype_quizmanager extends question_type {
  * also make $DB calls to get data from other tables
  */
    public function get_question_options($question) {
-     //TODO
        parent::get_question_options($question);
        return true;
     }
+    
+    /**
+     * During unit tests we need to be able to reset all caches so that each new test starts in a known state.
+     * Intended for use only for testing. This is a stop gap until we start using the MUC caching api here.
+     * You need to call this before every test that loads one or more random questions.
+     */
+    public function clear_caches_before_testing() {
+        $this->availablequestionsbycategory = array();
+    }
+
+
 
     /**
      * Random questions always get a question name that is Random (cateogryname).
@@ -248,6 +248,13 @@ class qtype_quizmanager extends question_type {
         return $questionids;
     }
 
+    public function get_available_questions_with_tags($difficulty, $topic) {
+        global $DB;
+	$query = 'select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0 intersect select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;';
+
+	$questionids = $DB->get_record_sql($query);
+        return $questionids;
+    }
 
     public function make_question($questiondata) {
         return $this->choose_other_question($questiondata, array());
@@ -264,8 +271,9 @@ class qtype_quizmanager extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
-        $available = $this->get_available_questions_from_category($questiondata->category,
-                !empty($questiondata->questiontext));
+	$topic = strtok($questiondata->questiontext, "-");
+	$difficulty = strtok("\n");
+        $available = $this->get_available_questions_with_tags($difficulty, $topic);
         shuffle($available);
 
         if ($forcequestionid !== null) {
