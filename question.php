@@ -43,7 +43,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_quizmanager_question extends question_graded_automatically_with_countback {
-
     /* it may make more sense to think of this as get expected data types */
     public function get_expected_data() {
         // TODO.
