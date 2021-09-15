@@ -27,7 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * quizmanager question editing form definition.
  *
@@ -60,6 +59,12 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         );
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
+
+	$mform->registerNoSubmitButton('my_btn');
+	$mform->addElement('button', 'my_btn', 'CLICK ME!');
+	$mform->addElement('html', '
+	    <script src="type/quizmanager/button.js"></script>
+	');
     }
 
     protected function data_preprocessing($question) {
