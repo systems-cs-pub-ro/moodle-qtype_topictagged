@@ -60,11 +60,13 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
 
-	$mform->registerNoSubmitButton('my_btn');
-	$mform->addElement('button', 'my_btn', 'CLICK ME!');
-	$mform->addElement('html', '
-	    <script src="type/quizmanager/button.js"></script>
-	');
+        $actions = [];
+        $actions[0] = get_string('addquestion', 'qtype_quizmanager');
+        $actions[1] = get_string('syncdb', 'qtype_quizmanager');
+        $actions[2] = get_string('downloadcsv', 'qtype_quizmanager');
+
+        $mform->addElement('select', 'action', get_string('action', 'qtype_quizmanager'), $actions);
+        $mform->setType('action', PARAM_INT);
     }
 
     protected function data_preprocessing($question) {

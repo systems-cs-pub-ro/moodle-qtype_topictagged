@@ -88,32 +88,62 @@ class qtype_quizmanager extends question_type {
      * @return object
      */
     public function save_question($question, $form) {
-        global $DB;
+        if ($form->action == '0') {
+            // Add Quesiton
+            global $DB;
 
-        $form->name = '';
-        list($category) = explode(',', $form->category);
+            $form->name = '';
+            list($category) = explode(',', $form->category);
 
-        if (!$form->includesubcategories) {
-            if ($DB->record_exists('question_categories', ['id' => $category, 'parent' => 0])) {
-                // The chosen category is a top category.
-                $form->includesubcategories = true;
+            if (!$form->includesubcategories) {
+                if ($DB->record_exists('question_categories', ['id' => $category, 'parent' => 0])) {
+                    // The chosen category is a top category.
+                    $form->includesubcategories = true;
+                }
             }
+
+            $form->tags = array();
+
+            if (empty($form->fromtags)) {
+                $form->fromtags = array();
+            }
+
+            $form->questiontext = array(
+                'text'	 => $form->settags[0] . "-" . $form->setdifficulty,
+                'format' => 0
+            );
+
+            // Name is not a required field for random questions, but
+            // parent::save_question Assumes that it is.
+            return parent::save_question($question, $form);
         }
-
-        $form->tags = array();
-
-        if (empty($form->fromtags)) {
-            $form->fromtags = array();
+        else if ($form->action == '1') {
+            // Sync DB
+            // TODO
+            //
+            // Display confirmation message and redirect to previous page
+            echo '
+                <script>
+                    alert("Sync successful\n");
+                    window.location.href = "' . $form->returnurl . '";
+                </script>
+            ';
+            die();
         }
+        else if ($form->action == '2') {
+            // Download CSV
+            // TODO
+            //
+            // Display confirmation message and redirect to previous page
+            echo '
+                <script>
+                    alert("Download successful\n");
+                    window.location.href = "' . $form->returnurl . '";
+                </script>
+            ';
+            die();
 
-	$form->questiontext = array(
-		'text'	 => $form->settags[0] . "-" . $form->setdifficulty,
-		'format' => 0
-	);
-
-        // Name is not a required field for random questions, but
-        // parent::save_question Assumes that it is.
-        return parent::save_question($question, $form);
+        }
     }
     public function save_question_options($question) {
 	global $DB;
