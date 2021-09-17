@@ -60,6 +60,21 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
 
+        //Hides default name, text, id and grade forms
+        $mform->addElement('html', '
+                <script>
+                    document.getElementById("id_name").value = \'defaultnamejs\';
+                    document.getElementById("fitem_id_name").style.display = \'none\';
+                    document.getElementById("id_questiontext").value= \'defaulttextjs\';
+                    document.getElementById("fitem_id_questiontext").style.display = \'none\';
+                    document.getElementById("id_defaultmark").value = \'1\';
+                    document.getElementById("fitem_id_defaultmark").style.display = \'none\';
+                    document.getElementById("fitem_id_generalfeedback").style.display = \'none\';
+                    document.getElementById("fitem_id_idnumber").style.display = \'none\';
+                    document.getElementById("id_tagsdheader").style.display = \'none\';
+                </script>
+        ');
+
         $actions = [];
         $actions[0] = get_string('addquestion', 'qtype_quizmanager');
         $actions[1] = get_string('syncdb', 'qtype_quizmanager');
