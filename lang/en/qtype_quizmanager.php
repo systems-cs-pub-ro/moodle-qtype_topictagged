@@ -49,3 +49,8 @@ $string['randomqplusnamesystemtags'] = 'Random (Any system-level category, tags:
 $string['randomqplusnametags'] = 'Random ({$a->category} and subcategories, tags: {$a->tags})';
 
 $string['selectedby'] = '{$a->questionname} selected by {$a->randomname}';
+
+$string['action'] = 'Desired action';
+$string['addquestion'] = 'Add Question';
+$string['syncdb'] = 'Syncronize Database';
+$string['downloadcsv'] = 'Download CSV';
