@@ -92,7 +92,6 @@ class qtype_quizmanager extends question_type {
             // Add Quesiton
             global $DB;
 
-            //var_dump($question->contextid); die();
             $form->name = '';
             list($category) = explode(',', $form->category);
 
