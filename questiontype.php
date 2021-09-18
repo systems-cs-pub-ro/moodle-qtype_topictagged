@@ -177,34 +177,26 @@ class qtype_quizmanager extends question_type {
             // TODO
             global $DB;
 
-            $entries = array();
-            $entries[1] = array(
-                'id' => '1',
-                'questiontext' => 'Question text 1',
-                'questionanswer' => 'Question answer 1',
-                'lastused' => 12345
-            );
-            $entries[2] = array(
-                'id' => '2',
-                'questiontext' => 'Question text 2',
-                'questionanswer' => 'Question answer 2',
-                'lastused' => 4532
-            );
-            $entries[3] = array(
-                'id' => '3',
-                'questiontext' => 'Question text 3',
-                'questionanswer' => 'Question answer 3',
-                'lastused' => 76576
-            );
-            $string = "";
+            $query = '
+                SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", quizmanager.lastused "last_used"
+                FROM {question} question
+                    JOIN {question_answers} answers
+                    ON answers.question = question.id
+                    JOIN {question_quizmanager} quizmanager
+                    ON question.id = quizmanager.questionid
+                GROUP BY question.id;
+            ';
+
+            $entries = $DB->get_records_sql($query);
+            $string = "question_text,answers,last_used\n";
 
             foreach ($entries as $entry) {
-                $string .= $entry['questiontext'];
+                $plaintext = $entry->question_text . $entry->answers;
+                $string .= '"' . $entry->question_text . '"';
                 $string .= ',';
-                $string .= $entry['lastused'];
-                $string .= ',';
-                $plaintext = $entry['questiontext'] . $entry['questionanswer'];
                 $string .= hash("sha256", $plaintext, false);
+                $string .= ',';
+                $string .= $entry->last_used;
                 $string .= "\n";
             }
 
