@@ -368,7 +368,7 @@ class qtype_quizmanager extends question_type {
         return $questionids;
     }
 
-    public function get_available_questions_with_tags($difficulty, $topic) {
+    public function get_available_questions_with_tags($difficulty, $topic, $categoryid) {
         global $DB;
         $query = 'select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0 intersect select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;';
 
@@ -391,9 +391,10 @@ class qtype_quizmanager extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
+        $categoryid = $questiondata->categoryobject->id;
 	$topic = strtok($questiondata->questiontext, "-");
 	$difficulty = strtok("\n");
-        $available = $this->get_available_questions_with_tags($difficulty, $topic);
+        $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
         shuffle($available);
 
         if ($forcequestionid !== null) {
