@@ -92,6 +92,7 @@ class qtype_quizmanager extends question_type {
             // Add Quesiton
             global $DB;
 
+            //var_dump($question->contextid); die();
             $form->name = '';
             list($category) = explode(',', $form->category);
 
@@ -133,12 +134,68 @@ class qtype_quizmanager extends question_type {
         else if ($form->action == '2') {
             // Download CSV
             // TODO
-            //
-            // Display confirmation message and redirect to previous page
+            global $DB;
+
+            $entries = array();
+            $entries[1] = array(
+                'id' => '1',
+                'questiontext' => 'Question text 1',
+                'questionanswer' => 'Question answer 1',
+                'lastused' => 12345
+            );
+            $entries[2] = array(
+                'id' => '2',
+                'questiontext' => 'Question text 2',
+                'questionanswer' => 'Question answer 2',
+                'lastused' => 4532
+            );
+            $entries[3] = array(
+                'id' => '3',
+                'questiontext' => 'Question text 3',
+                'questionanswer' => 'Question answer 3',
+                'lastused' => 76576
+            );
+            $string = "";
+
+            foreach ($entries as $entry) {
+                $string .= $entry['questiontext'];
+                $string .= ',';
+                $string .= $entry['lastused'];
+                $string .= ',';
+                $plaintext = $entry['questiontext'] . $entry['questionanswer'];
+                $string .= hash("sha256", $plaintext, false);
+                $string .= "\n";
+            }
+
+            require_login($course, true);
+            $fs = get_file_storage();
+
+            $fileinfo = array(
+                'contextid' => $question->contextid,
+                'component' => 'qtype_quizmanager',
+                'filearea' => 'downloadarea',
+                'itemid' => 0,
+                'filepath' => '/',
+                'filename' => 'Questions.csv'
+            );
+
+            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+            if ($file) {
+                $file->delete();
+            }
+
+            $fs->create_file_from_string($fileinfo, $string);
+            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+            $options = [];
+            $options['dontdie'] = true;
+            send_stored_file($file, 0, 0, false, $options);
+
             echo '
                 <script>
-                    alert("Download successful\n");
-                    window.location.href = "' . $form->returnurl . '";
+                    window.location.href = "' . $form->returnrul . '";
                 </script>
             ';
             die();
