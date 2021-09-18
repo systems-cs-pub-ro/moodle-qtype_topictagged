@@ -82,6 +82,29 @@ class qtype_quizmanager extends question_type {
         parent::delete_files($questionid, $contextid);
         $this->delete_files_in_hints($questionid, $contextid);
     }
+
+    /**
+     * Insert data in table.
+     * If data is already present, update
+     */
+    private function insert_or_update_record($table, $record) {
+        global $DB;
+
+        $old_record = $DB->get_record_sql('
+            SELECT id
+            FROM {' . $table . '}
+            WHERE questionid = ' . $record['questionid'] . ';
+        ');
+
+        if ($old_record) {
+            $record['id'] = intval($old_record->id);
+            $DB->update_record($table, $record);
+        }
+        else {
+            $DB->insert_record($table, $record);
+        }
+    }
+
      /**
      * @param stdClass $question
      * @param array $form
@@ -119,8 +142,27 @@ class qtype_quizmanager extends question_type {
         }
         else if ($form->action == '1') {
             // Sync DB
-            // TODO
-            //
+
+            // Get all question from database having the tag `last_used` set
+            global $DB;
+            $query = '
+                select tag_instance.itemid, tag.name
+                from {tag} tag 
+                    join {tag_instance} tag_instance
+                    on tag.id = tag_instance.tagid
+                where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
+                    AND tag.name like "last_used%"
+            ';
+
+            // iterate through question
+            $records = $DB->get_records_sql($query);
+            foreach ($records as $raw_record) {
+                $record = [];
+                $record['questionid'] = $raw_record->itemid;
+                $record['lastused'] = intval(substr($raw_record->name, 10));
+                $this->insert_or_update_record('question_quizmanager', $record);
+            }
+
             // Display confirmation message and redirect to previous page
             echo '
                 <script>
@@ -280,9 +322,9 @@ class qtype_quizmanager extends question_type {
 
     public function get_available_questions_with_tags($difficulty, $topic) {
         global $DB;
-	$query = 'select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0 intersect select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;';
+        $query = 'select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0 intersect select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;';
 
-	$questionids = $DB->get_record_sql($query);
+        $questionids = $DB->get_record_sql($query);
         return $questionids;
     }
 
