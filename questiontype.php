@@ -177,6 +177,18 @@ class qtype_quizmanager extends question_type {
             // TODO
             global $DB;
 
+            $query = '
+                SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", quizmanager.lastused "last_used"
+                FROM {question} question
+                    JOIN {question_answers} answers
+                    ON answers.question = question.id
+                    JOIN {question_quizmanager} quizmanager
+                    ON question.id = quizmanager.questionid
+                GROUP BY question.id;
+            ';
+
+            $entries = $DB->get_records_sql($query);
+
             $entries = array();
             $entries[1] = array(
                 'id' => '1',
