@@ -71,7 +71,7 @@ class qtype_quizmanager extends question_type {
 
       /* ties additional table fields to the database */
     public function extra_question_fields() {
-        return null;//array('question_quizmanager', 'somefieldname','anotherfieldname');
+        return null;
     }
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
@@ -131,6 +131,15 @@ class qtype_quizmanager extends question_type {
                 $form->fromtags = array();
             }
 
+            $difficultyoptions = [];
+            $difficultyoptions[0] = 'Easy';
+            $difficultyoptions[1] = 'Easy-Medium';
+            $difficultyoptions[2] = 'Medium';
+            $difficultyoptions[3] = 'Medium-Hard';
+            $difficultyoptions[4] = 'Hard';
+            $questiondifficulty = $difficultyoptions[$form->setdifficulty];
+            var_dump($questiondifficulty); die();
+
             $form->questiontext = array(
                 'text'	 => $form->settags[0] . "-" . $form->setdifficulty,
                 'format' => 0
@@ -146,11 +155,11 @@ class qtype_quizmanager extends question_type {
             // Get all question from database having the tag `last_used` set
             global $DB;
             $query = '
-                select tag_instance.itemid, tag.name
-                from {tag} tag 
-                    join {tag_instance} tag_instance
-                    on tag.id = tag_instance.tagid
-                where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
+                SELECT tag_instance.itemid, tag.name
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance
+                    ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
                     AND tag.name like "last_used%"
             ';
 
@@ -174,9 +183,9 @@ class qtype_quizmanager extends question_type {
         }
         else if ($form->action == '2') {
             // Download CSV
-            // TODO
-            global $DB;
 
+            // Get all questions form database with their answers and last_used tag
+            global $DB;
             $query = '
                 SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", quizmanager.lastused "last_used"
                 FROM {question} question
@@ -190,6 +199,7 @@ class qtype_quizmanager extends question_type {
             $entries = $DB->get_records_sql($query);
             $string = "question_text,answers,last_used\n";
 
+            // Iterate trough questions and create csv string
             foreach ($entries as $entry) {
                 $plaintext = $entry->question_text . $entry->answers;
                 $string .= '"' . $entry->question_text . '"';
@@ -200,6 +210,7 @@ class qtype_quizmanager extends question_type {
                 $string .= "\n";
             }
 
+            // Set file options
             require_login($course, true);
             $fs = get_file_storage();
 
@@ -214,10 +225,12 @@ class qtype_quizmanager extends question_type {
 
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+            // If file already exists, delete it
             if ($file) {
                 $file->delete();
             }
 
+            // Create and send file to user
             $fs->create_file_from_string($fileinfo, $string);
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
@@ -232,7 +245,6 @@ class qtype_quizmanager extends question_type {
                 </script>
             ';
             die();
-
         }
     }
     public function save_question_options($question) {
@@ -253,18 +265,17 @@ class qtype_quizmanager extends question_type {
 	$updateobject->difficulty = $question->setdifficulty;
 
         return $DB->update_record('question', $updateobject);
- 
     }
 
- /* 
- * populates fields such as combined feedback 
- * also make $DB calls to get data from other tables
- */
+    /**
+     * populates fields such as combined feedback 
+     * also make $DB calls to get data from other tables
+     */
    public function get_question_options($question) {
        parent::get_question_options($question);
        return true;
     }
-    
+
     /**
      * During unit tests we need to be able to reset all caches so that each new test starts in a known state.
      * Intended for use only for testing. This is a stop gap until we start using the MUC caching api here.
@@ -273,8 +284,6 @@ class qtype_quizmanager extends question_type {
     public function clear_caches_before_testing() {
         $this->availablequestionsbycategory = array();
     }
-
-
 
     /**
      * Random questions always get a question name that is Random (cateogryname).
@@ -368,9 +377,26 @@ class qtype_quizmanager extends question_type {
         return $questionids;
     }
 
+    /**
+     * Gets all the questions from database with specific difficulty, tags and categoryid
+     * @param string    question difficulty
+     * @param string    question tags
+     * @param int       category id from $questiondata object
+     * @return array    ids of questions that fit the requirements
+     */
     public function get_available_questions_with_tags($difficulty, $topic, $categoryid) {
         global $DB;
-        $query = 'select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0 intersect select tag_instance.itemid from {tag} tag join {tag_instance} tag_instance on tag.id = tag_instance.tagid where strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;';
+        $query = '
+            SELECT tag_instance.itemid
+            FROM {tag} tag
+                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+            INTERSECT
+            SELECT tag_instance.itemid
+            FROM {tag} tag
+                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;
+        ';
 
         $questionids = $DB->get_record_sql($query);
         return $questionids;
@@ -421,19 +447,19 @@ class qtype_quizmanager extends question_type {
 
 
 
- /**
- * executed at runtime (e.g. in a quiz or preview 
- **/
+    /**
+     * executed at runtime (e.g. in a quiz or preview 
+     */
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_question_answers($question, $questiondata);
         parent::initialise_combined_feedback($question, $questiondata);
     }
-    
+
    public function initialise_question_answers(question_definition $question, $questiondata,$forceplaintextanswers = true){ 
      //TODO
     }
-    
+
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null) {
         if (!isset($data['@']['type']) || $data['@']['type'] != 'question_quizmanager') {
             return false;
