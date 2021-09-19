@@ -138,10 +138,9 @@ class qtype_quizmanager extends question_type {
             $difficultyoptions[3] = 'Medium-Hard';
             $difficultyoptions[4] = 'Hard';
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
-            var_dump($questiondifficulty); die();
 
             $form->questiontext = array(
-                'text'	 => $form->settags[0] . "-" . $form->setdifficulty,
+                'text'	 => $form->settags[0] . "-" . $questiondifficulty,
                 'format' => 0
             );
 

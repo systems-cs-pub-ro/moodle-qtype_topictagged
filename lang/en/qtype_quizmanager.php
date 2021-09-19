@@ -30,7 +30,6 @@ $string['pluginnameadding'] = 'Adding a quizmanager question';
 $string['pluginnameediting'] = 'Editing a quizmanager question';
 $string['pluginnamesummary'] = 'A quizmanager question type that allows something to be done that can test a student on some understanding.';
 $string['setdifficulty'] = 'Set difficulty';
-$string['setdifficultyempty'] = 'Enter question difficulty (e.g. easy-hard, 1-5)';
 $string['settags'] = 'Set tags';
 $string['settagsempty'] = 'No tag selected';
 
@@ -54,3 +53,5 @@ $string['action'] = 'Desired action';
 $string['addquestion'] = 'Add Question';
 $string['syncdb'] = 'Syncronize Database';
 $string['downloadcsv'] = 'Download CSV';
+
+$string['randomqname'] = 'Quiz Manager question {$a}';
