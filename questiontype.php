@@ -398,6 +398,13 @@ class qtype_quizmanager extends question_type {
         ';
 
         $questionids = $DB->get_record_sql($query);
+        // If no question with specified data is found, die
+        // TODO -> remove the question last introduced, since the same error is thrown
+        //      every time the user tries to acces/edit the quiz
+        if (!$questionids) {
+            echo ' <script> alert("No questions found"); </script> ';
+            die();
+        }
         return $questionids;
     }
 
@@ -439,6 +446,13 @@ class qtype_quizmanager extends question_type {
 
             $question = question_bank::load_question($questionid, $allowshuffle);
             $this->set_selected_question_name($question, $questiondata->name);
+
+            // Update last used tag after question use
+            $record = [];
+            $record['questionid'] = $question->id;
+            $record['lastused'] = time();
+            $this->insert_or_update_record('question_quizmanager', $record);
+
             return $question;
         }
         return null;
