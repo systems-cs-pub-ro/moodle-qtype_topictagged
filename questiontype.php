@@ -394,9 +394,15 @@ class qtype_quizmanager extends question_type {
             SELECT tag_instance.itemid
             FROM {tag} tag
                 JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0;
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+            INTERSECT
+            SELECT question.id
+            FROM {tag_instance} tag_instance
+                JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . ';
         ';
 
+        // TODO -> use get_records_sql in order to sort the elements or modify the query to do it
         $questionids = $DB->get_record_sql($query);
         // If no question with specified data is found, die
         // TODO -> remove the question last introduced, since the same error is thrown
