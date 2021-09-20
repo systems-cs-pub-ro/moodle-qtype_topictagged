@@ -43,13 +43,14 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         //remove any that come with the parent class you don't want
 	
         //Add difficulty field
-        $difficultyoptions = array(
-            'multiple' => false,
-            'tags' => true,
-            'noselectionstring' => get_string('setdifficultyempty', 'qtype_quizmanager'),
-        );
-        $mform->addElement('autocomplete', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
-            null, $difficultyoptions);
+        $difficultyoptions = [];
+        $difficultyoptions[0] = 'Easy';
+        $difficultyoptions[1] = 'Easy-Medium';
+        $difficultyoptions[2] = 'Medium';
+        $difficultyoptions[3] = 'Medium-Hard';
+        $difficultyoptions[4] = 'Hard';
+        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
+            $difficultyoptions);
 
         //Add tags field
         $autocompleteoptions = array(

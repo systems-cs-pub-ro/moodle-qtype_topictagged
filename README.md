@@ -1,18 +1,17 @@
 # Custom Quiz Moodle Plugin
 __User stories__:
-|Ca ...|Vreau să|Ca să|
+|As a...|I want to...|so that...|
 |------|--------|-----|
-|evaluator|generez teste conform unor specificații clare|mă asigur că fiecare student va avea un test similar cu întrebări diferite|
-|evaluator|îmi aleg sursa întrebărilor: întrebări încărcate deja, să încarc un fișier cu întrebările sau mă leg la o baza de date externă|aleg la fiecare test ce întrebări vreau să folosesc|
-|evaluator|să existe valori implicite|pot genera rapid teste chiar dacă nu specific toate datele testului|
-|evaluator|selectez dacă vreau sau nu întrebări noi|evit intrebarile recent folosite|
-|evaluator|pastrez configurațiile Moodle-specific ale testului|setez timpul de deschidere, review etc.|
-|evaluator|adaug tag-uri întrebărilor|specific dificultatea, topicul, și alte date relevante|
-|evaluator|am propriul nivel de dificultate (easy - hard; 1 - 5; ușor - greu)|nu depind de un sistem de măsurare a dificultății fix|
-|evaluator|se actualizeze data utilizării întrebărilor în mod automat|evit refolosirea acestora|
-|administrator Moodle|nu existe întrebări duplicat|pot face backup eficient
-|administrator Moodle|nu blocheze plaforma|permită tuturor utilizatorilor să folosească Moodle|
-|student|Am testul pregătit când dau click pe “Attempt quiz”|nu pierd din timpul alocat testului|
+|evaluator|generate quizzes according to clear specifications|I can make sure that every student will have a similar quiz with different questions|
+|evaluator|choose a source for the questions: already loaded questions, new questions from a file or external database|I can choose what set of questions to use for every quiz|
+|evaluator|to have the option to choose from default templates|I can generate the quiz fast, without specifying all the data|
+|evaluator|choose if I want to use new questions or nor|avoid recently used questions|
+|evaluator|keep the default quiz setting available|set the timer, review options, etc.|
+|evaluator|add tags to my questions|specify the difficulty, topic and other relevant data|
+|evaluator|update the last used date of the questions|avoid reusing them|
+|Moodle administrator|avoid question duplicates|create a backup effectively|
+|Moodle administrator|not to crash the server|all the users can use Moodle|
+|student|have the quiz ready when I click "Attempt"|do not waste the allocated time|
 
 
 __References__
