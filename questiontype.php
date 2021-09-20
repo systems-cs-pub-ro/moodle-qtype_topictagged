@@ -190,6 +190,7 @@ class qtype_quizmanager extends question_type {
         else if ($form->action == '2') {
             // Download CSV
 
+            $categoryid = strtok($form->category, ',');
             // Get all questions form database with their answers and last_used tag
             global $DB;
             $query = '
@@ -199,6 +200,7 @@ class qtype_quizmanager extends question_type {
                     ON answers.question = question.id
                     JOIN {question_quizmanager} quizmanager
                     ON question.id = quizmanager.questionid
+                WHERE question.category = ' . $categoryid . '
                 GROUP BY question.id;
             ';
 
