@@ -151,15 +151,22 @@ class qtype_quizmanager extends question_type {
         else if ($form->action == '1') {
             // Sync DB
 
-            // Get all question from database having the tag `last_used` set
+            $categoryid = strtok($form->category, ',');
+            // Get all question from category having the tag `last_used` set
             global $DB;
             $query = '
-                SELECT tag_instance.itemid, tag.name
-                FROM {tag} tag
+                SELECT all_entries.itemid, all_entries.name
+                FROM (
+                    SELECT tag_instance.itemid, tag.name, tag_instance.contextid
+                    FROM {tag} tag
                     JOIN {tag_instance} tag_instance
                     ON tag.id = tag_instance.tagid
                 WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
                     AND tag.name like "last_used%"
+                ) AS all_entries
+                JOIN {question} question
+                ON question.id = all_entries.itemid
+                WHERE question.category = ' . $categoryid . ';
             ';
 
             // iterate through question
