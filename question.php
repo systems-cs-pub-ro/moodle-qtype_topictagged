@@ -45,27 +45,23 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_quizmanager_question extends question_graded_automatically_with_countback {
     /* it may make more sense to think of this as get expected data types */
     public function get_expected_data() {
-        // TODO.
         return array();
     }
-    
+
      public function start_attempt(question_attempt_step $step, $variant) {
-        //TODO
         /* there are 9 occurrances of this method defined in files called question.php a new install of Moodle
         so you are probably going to have to define it */
     }
-    
+
     /**
      * @return summary a string that summarises how the user responded. This 
      * is used in the quiz responses report
      * */
     public function summarise_response(array $response) {
-        // TODO.
         return null;
     }
 
     public function is_complete_response(array $response) {
-        // TODO.
         /* You might want to check that the user has done something
             before returning true, e.g. clicked a radio button or entered some 
             text 
@@ -74,11 +70,10 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
     }
 
     public function get_validation_error(array $response) {
-        // TODO.
         return '';
     }
-    
-    /** 
+
+    /**
      * if you are moving from viewing one question to another this will
      * discard the processing if the answer has not changed. If you don't
      * use this method it will constantantly generate new question steps and
@@ -96,9 +91,8 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
      * @return bool whether the two sets of responses are the same - that is
      *      whether the new set of responses can safely be discarded.
      */
-     
+
     public function is_same_response(array $prevresponse, array $newresponse) {
-        // TODO.
         return question_utils::arrays_same_at_key_missing_is_blank(
                 $prevresponse, $newresponse, 'answer');
     }
@@ -113,7 +107,6 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
      * when a quiz containing this question starts.
      */
     public function get_correct_response() {
-        // TODO.        
         return array();
     }
     /**
@@ -131,7 +124,6 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
 
     public function check_file_access($qa, $options, $component, $filearea,
             $args, $forcedownload) {
-        // TODO.
         if ($component == 'question' && $filearea == 'hint') {
             return $this->check_hint_file_access($qa, $options, $args);
 
@@ -146,11 +138,10 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
      * @return array (number, integer) the fraction, and the state.
      */
     public function grade_response(array $response) {
-        // TODO.
         $fraction = 0;
         return array($fraction, question_state::graded_state_for_fraction($fraction));
     }
-     
+
      /**
      * Work out a final grade for this attempt, taking into account all the
      * tries the student made. Used in interactive behaviour once all
@@ -177,7 +168,6 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
         then the student will score 3 if they get the question right first 
         time, 2 if they get it right second try, and 1 of they get it right 
         on the third try.*/
-        //TODO
         return 0;
     }
 }
