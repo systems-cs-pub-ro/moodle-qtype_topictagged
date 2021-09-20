@@ -386,20 +386,25 @@ class qtype_quizmanager extends question_type {
     public function get_available_questions_with_tags($difficulty, $topic, $categoryid) {
         global $DB;
         $query = '
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-            INTERSECT
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-            INTERSECT
-            SELECT question.id
-            FROM {tag_instance} tag_instance
-                JOIN {question} question ON question.id = tag_instance.itemid
-            WHERE question.category = ' . $categoryid . ';
+            SELECT quizmanager.questionid, quizmanager.lastused
+            FROM (
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+                INTERSECT
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . '
+            ) as questionids
+                JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
+            ORDER BY quizmanager.lastused;
         ';
 
         $questionids = $DB->get_record_sql($query);
