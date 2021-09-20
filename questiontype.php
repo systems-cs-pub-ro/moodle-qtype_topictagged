@@ -386,7 +386,7 @@ class qtype_quizmanager extends question_type {
     public function get_available_questions_with_tags($difficulty, $topic, $categoryid) {
         global $DB;
         $query = '
-            SELECT quizmanager.questionid, quizmanager.lastused
+            SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
             FROM (
                 SELECT tag_instance.itemid
                 FROM {tag} tag
@@ -403,7 +403,7 @@ class qtype_quizmanager extends question_type {
                     JOIN {question} question ON question.id = tag_instance.itemid
                 WHERE question.category = ' . $categoryid . '
             ) as questionids
-                JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
+                LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
             ORDER BY quizmanager.lastused;
         ';
 
