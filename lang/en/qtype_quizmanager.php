@@ -30,8 +30,8 @@ $string['pluginnameadding'] = 'Adding a quizmanager question';
 $string['pluginnameediting'] = 'Editing a quizmanager question';
 $string['pluginnamesummary'] = 'A quizmanager question type that allows something to be done that can test a student on some understanding.';
 $string['setdifficulty'] = 'Set difficulty';
-$string['settags'] = 'Set tags';
-$string['settagsempty'] = 'No tag selected';
+$string['settags'] = 'Set topic';
+$string['settagsempty'] = 'No topic selected';
 
 $string['randomqnamefromtop'] = 'Faulty random question! Please delete this question.';
 $string['randomqnamefromtoptags'] = 'Faulty random question! Please delete this question.';
