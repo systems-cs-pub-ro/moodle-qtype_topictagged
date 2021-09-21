@@ -493,6 +493,7 @@ class qtype_quizmanager extends question_type {
         $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
         return $question;
     }
+
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();

@@ -109,6 +109,7 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
     public function get_correct_response() {
         return array();
     }
+    
     /**
      * Given a response, reset the parts that are wrong. Relevent in
      * interactive with multiple tries
@@ -132,6 +133,7 @@ class qtype_quizmanager_question extends question_graded_automatically_with_coun
                     $args, $forcedownload);
         }
     }
+
     /**
      * @param array $response responses, as returned by
      *      {@link question_attempt_step::get_qt_data()}.
