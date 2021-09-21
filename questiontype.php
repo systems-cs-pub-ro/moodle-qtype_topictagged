@@ -417,13 +417,6 @@ class qtype_quizmanager extends question_type {
         ';
 
         $questionids = $DB->get_record_sql($query);
-        // If no question with specified data is found, die
-        // TODO -> remove the question last introduced, since the same error is thrown
-        //      every time the user tries to acces/edit the quiz
-        if (!$questionids) {
-            echo ' <script> alert("No questions found having the selected difficulty and topic"); </script> ';
-            die();
-        }
         return $questionids;
     }
 
@@ -443,8 +436,8 @@ class qtype_quizmanager extends question_type {
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
         $categoryid = $questiondata->categoryobject->id;
-	$topic = strtok($questiondata->questiontext, "-");
-	$difficulty = strtok("\n");
+        $topic = strtok($questiondata->questiontext, "-");
+        $difficulty = strtok("\n");
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
         shuffle($available);
 

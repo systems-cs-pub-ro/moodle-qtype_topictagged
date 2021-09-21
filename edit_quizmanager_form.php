@@ -92,6 +92,50 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         return $question;
     }
 
+    public function validation($fromform, $files) {
+        global $DB;
+        $mform = $this->_form;
+        $difficultyoptions = [];
+        $difficultyoptions[0] = 'Easy';
+        $difficultyoptions[1] = 'Easy-Medium';
+        $difficultyoptions[2] = 'Medium';
+        $difficultyoptions[3] = 'Medium-Hard';
+        $difficultyoptions[4] = 'Hard';
+        $difficulty = $difficultyoptions[intval($fromform->setdifficulty)];
+        $topic = $fromform["settags"][0];
+        $categoryid = strtok($fromform["category"], ',');
+        $query = '
+            SELECT tag_instance.itemid
+            FROM {tag} tag
+                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+            INTERSECT
+            SELECT tag_instance.itemid
+            FROM {tag} tag
+                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+            INTERSECT
+            SELECT question.id
+            FROM {tag_instance} tag_instance
+                JOIN {question} question ON question.id = tag_instance.itemid
+            WHERE question.category = ' . $categoryid . '
+        ';
+
+
+        $questionids = $DB->get_record_sql($query);
+        // If no question with specified data is found, the question will not be saved
+        if (!$questionids) {
+            echo '
+                <script>
+                    alert("No questions found having the selected difficulty and topic");
+                    window.location.href = "' . $fromform["returnurl"] . '";
+                </script>
+            ';
+            die();
+            return false;
+        }       
+    }
+
     public function qtype() {
         return 'quizmanager';
     }
