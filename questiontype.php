@@ -477,8 +477,6 @@ class qtype_quizmanager extends question_type {
         return null;
     }
 
-
-
     /**
      * executed at runtime (e.g. in a quiz or preview 
      */
@@ -486,10 +484,6 @@ class qtype_quizmanager extends question_type {
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_question_answers($question, $questiondata);
         parent::initialise_combined_feedback($question, $questiondata);
-    }
-
-   public function initialise_question_answers(question_definition $question, $questiondata,$forceplaintextanswers = true){ 
-     //TODO
     }
 
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null) {
@@ -506,19 +500,7 @@ class qtype_quizmanager extends question_type {
         $pluginmanager = core_plugin_manager::instance();
         $gapfillinfo = $pluginmanager->get_plugin_info('question_quizmanager');
         $output = parent::export_to_xml($question, $format);
-        //TODO
         $output .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);
         return $output;
-    }
-
-
-    public function get_random_guess_score($questiondata) {
-        // TODO.
-        return 0;
-    }
-
-    public function get_possible_responses($questiondata) {
-        // TODO.
-        return array();
     }
 }
