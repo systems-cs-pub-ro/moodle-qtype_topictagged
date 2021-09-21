@@ -42,7 +42,7 @@ class qtype_quizmanager_renderer extends qtype_renderer {
         $question = $qa->get_question();
 
         $questiontext = $question->format_questiontext($qa);
-       
+
         $result = html_writer::tag('div', $questiontext, array('class' => 'qtext'));
         /* Some code to restore the state of the question as you move back and forth
         from one question to another in a quiz and some code to disable the input fields
@@ -57,12 +57,10 @@ class qtype_quizmanager_renderer extends qtype_renderer {
     }
 
     public function specific_feedback(question_attempt $qa) {
-        // TODO.
         return '';
     }
 
     public function correct_response(question_attempt $qa) {
-        // TODO.
         return '';
     }
 }
