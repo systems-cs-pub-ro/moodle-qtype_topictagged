@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_quizmanager';
-$plugin->version   = 2013012900;
+$plugin->version   = 2021092100;
 
 $plugin->requires  = 2012062504;
 

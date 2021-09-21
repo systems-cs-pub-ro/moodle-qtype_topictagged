@@ -69,10 +69,11 @@ class qtype_quizmanager extends question_type {
         $this->manualqtypes = implode(',', $manualqtypes);
     }
 
-      /* ties additional table fields to the database */
+    /* ties additional table fields to the database */
     public function extra_question_fields() {
         return null;
     }
+
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
         $this->move_files_in_hints($questionid, $oldcontextid, $newcontextid);
@@ -113,8 +114,8 @@ class qtype_quizmanager extends question_type {
     public function save_question($question, $form) {
         if ($form->action == '0') {
             // Add Quesiton
-            global $DB;
 
+            global $DB;
             $form->name = '';
             list($category) = explode(',', $form->category);
 
@@ -255,8 +256,9 @@ class qtype_quizmanager extends question_type {
             die();
         }
     }
+
     public function save_question_options($question) {
-	global $DB;
+        global $DB;
 
         // No options, as such, but we set the parent field to the question's
         // own id. Setting the parent field has the effect of hiding this
@@ -269,8 +271,8 @@ class qtype_quizmanager extends question_type {
         $category = $DB->get_record('question_categories',
                 array('id' => $question->category), '*', MUST_EXIST);
         $updateobject->name = $this->question_name($category, $question->includesubcategories, $question->fromtags);
-	$updateobject->topic = $question->settags[0];
-	$updateobject->difficulty = $question->setdifficulty;
+        $updateobject->topic = $question->settags[0];
+        $updateobject->difficulty = $question->setdifficulty;
 
         return $DB->update_record('question', $updateobject);
     }
@@ -394,6 +396,9 @@ class qtype_quizmanager extends question_type {
      */
     public function get_available_questions_with_tags($difficulty, $topic, $categoryid) {
         global $DB;
+
+        // vertical join on questionid for questions having the topic, difficulty and category specified
+        // left joined with the last_used  attribute
         $query = '
             SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
             FROM (
@@ -417,13 +422,6 @@ class qtype_quizmanager extends question_type {
         ';
 
         $questionids = $DB->get_record_sql($query);
-        // If no question with specified data is found, die
-        // TODO -> remove the question last introduced, since the same error is thrown
-        //      every time the user tries to acces/edit the quiz
-        if (!$questionids) {
-            echo ' <script> alert("No questions found having the selected difficulty and topic"); </script> ';
-            die();
-        }
         return $questionids;
     }
 
@@ -443,8 +441,8 @@ class qtype_quizmanager extends question_type {
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
         $categoryid = $questiondata->categoryobject->id;
-	$topic = strtok($questiondata->questiontext, "-");
-	$difficulty = strtok("\n");
+        $topic = strtok($questiondata->questiontext, "-");
+        $difficulty = strtok("\n");
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
         shuffle($available);
 
@@ -495,6 +493,7 @@ class qtype_quizmanager extends question_type {
         $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
         return $question;
     }
+
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();
