@@ -61,7 +61,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
 
-        //Hides default name, text, id and grade forms
+        //Hide default name, text, id and grade forms
         $mform->addElement('html', '
                 <script>
                     document.getElementById("id_name").value = \'defaultnamejs\';
@@ -93,6 +93,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
     }
 
     public function validation($fromform, $files) {
+        // Check if a question exists having the selected difficulty, topic and category
         global $DB;
         $mform = $this->_form;
         $difficultyoptions = [];
