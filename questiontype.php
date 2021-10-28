@@ -32,7 +32,9 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
 require_once($CFG->dirroot . '/question/type/quizmanager/question.php');
+require_once($CFG->dirroot . '/question/type/questiontypebase.php');
 
+require_once('utils.php');
 
 /**
  * The quizmanager question type.
@@ -84,48 +86,17 @@ class qtype_quizmanager extends question_type {
         $this->delete_files_in_hints($questionid, $contextid);
     }
 
-    /**
-     * Insert data in table.
-     * If data is already present, update
-     */
-    private function insert_or_update_record($table, $record) {
-        global $DB;
-
-        $old_record = $DB->get_record_sql('
-            SELECT id
-            FROM {' . $table . '}
-            WHERE questionid = ' . $record['questionid'] . ';
-        ');
-
-        if ($old_record) {
-            $record['id'] = intval($old_record->id);
-            $DB->update_record($table, $record);
-        }
-        else {
-            $DB->insert_record($table, $record);
-        }
-    }
-
      /**
      * @param stdClass $question
      * @param array $form
      * @return object
      */
     public function save_question($question, $form) {
-        if ($form->action == '0') {
             // Add Quesiton
 
             global $DB;
             $form->name = '';
             list($category) = explode(',', $form->category);
-
-            if (!$form->includesubcategories) {
-                if ($DB->record_exists('question_categories', ['id' => $category, 'parent' => 0])) {
-                    // The chosen category is a top category.
-                    $form->includesubcategories = true;
-                }
-            }
-
             $form->tags = array();
 
             if (empty($form->fromtags)) {
@@ -148,113 +119,6 @@ class qtype_quizmanager extends question_type {
             // Name is not a required field for random questions, but
             // parent::save_question Assumes that it is.
             return parent::save_question($question, $form);
-        }
-        else if ($form->action == '1') {
-            // Sync DB
-
-            $categoryid = strtok($form->category, ',');
-            // Get all question from category having the tag `last_used` set
-            global $DB;
-            $query = '
-                SELECT all_entries.itemid, all_entries.name
-                FROM (
-                    SELECT tag_instance.itemid, tag.name, tag_instance.contextid
-                    FROM {tag} tag
-                    JOIN {tag_instance} tag_instance
-                    ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
-                    AND tag.name like "last_used%"
-                ) AS all_entries
-                JOIN {question} question
-                ON question.id = all_entries.itemid
-                WHERE question.category = ' . $categoryid . ';
-            ';
-
-            // iterate through question
-            $records = $DB->get_records_sql($query);
-            foreach ($records as $raw_record) {
-                $record = [];
-                $record['questionid'] = $raw_record->itemid;
-                $record['lastused'] = intval(substr($raw_record->name, 10));
-                $this->insert_or_update_record('question_quizmanager', $record);
-            }
-
-            // Display confirmation message and redirect to previous page
-            echo '
-                <script>
-                    alert("Sync successful\n");
-                    window.location.href = "' . $form->returnurl . '";
-                </script>
-            ';
-            die();
-        }
-        else if ($form->action == '2') {
-            // Download CSV
-
-            $categoryid = strtok($form->category, ',');
-            // Get all questions form database with their answers and last_used tag
-            global $DB;
-            $query = '
-                SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", quizmanager.lastused "last_used"
-                FROM {question} question
-                    JOIN {question_answers} answers
-                    ON answers.question = question.id
-                    JOIN {question_quizmanager} quizmanager
-                    ON question.id = quizmanager.questionid
-                WHERE question.category = ' . $categoryid . '
-                GROUP BY question.id;
-            ';
-
-            $entries = $DB->get_records_sql($query);
-            $string = "question_text,answers,last_used\n";
-
-            // Iterate trough questions and create csv string
-            foreach ($entries as $entry) {
-                $plaintext = $entry->question_text . $entry->answers;
-                $string .= '"' . $entry->question_text . '"';
-                $string .= ',';
-                $string .= hash("sha256", $plaintext, false);
-                $string .= ',';
-                $string .= $entry->last_used;
-                $string .= "\n";
-            }
-
-            // Set file options
-            require_login($course, true);
-            $fs = get_file_storage();
-
-            $fileinfo = array(
-                'contextid' => $question->contextid,
-                'component' => 'qtype_quizmanager',
-                'filearea' => 'downloadarea',
-                'itemid' => 0,
-                'filepath' => '/',
-                'filename' => 'Questions.csv'
-            );
-
-            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-            // If file already exists, delete it
-            if ($file) {
-                $file->delete();
-            }
-
-            // Create and send file to user
-            $fs->create_file_from_string($fileinfo, $string);
-            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-            $options = [];
-            $options['dontdie'] = true;
-            send_stored_file($file, 0, 0, false, $options);
-
-            echo '
-                <script>
-                    window.location.href = "' . $form->returnrul . '";
-                </script>
-            ';
-            die();
-        }
     }
 
     public function save_question_options($question) {
@@ -270,7 +134,6 @@ class qtype_quizmanager extends question_type {
         // We also force the question name to be 'Random (categoryname)'.
         $category = $DB->get_record('question_categories',
                 array('id' => $question->category), '*', MUST_EXIST);
-        $updateobject->name = $this->question_name($category, $question->includesubcategories, $question->fromtags);
         $updateobject->topic = $question->settags[0];
         $updateobject->difficulty = $question->setdifficulty;
 
@@ -293,64 +156,6 @@ class qtype_quizmanager extends question_type {
      */
     public function clear_caches_before_testing() {
         $this->availablequestionsbycategory = array();
-    }
-
-    /**
-     * Random questions always get a question name that is Random (cateogryname).
-     * This function is a centralised place to calculate that, given the category.
-     * @param stdClass $category the category this question picks from. (Only ->name is used.)
-     * @param bool $includesubcategories whether this question also picks from subcategories.
-     * @param string[] $tagnames Name of tags this question picks from.
-     * @return string the name this question should have.
-     */
-    public function question_name($category, $includesubcategories, $tagnames = []) {
-        $categoryname = '';
-        if ($category->parent && $includesubcategories) {
-            $stringid = 'randomqplusname';
-            $categoryname = shorten_text($category->name, 100);
-        } else if ($category->parent) {
-            $stringid = 'randomqname';
-            $categoryname = shorten_text($category->name, 100);
-        } else if ($includesubcategories) {
-            $context = context::instance_by_id($category->contextid);
-
-            switch ($context->contextlevel) {
-                case CONTEXT_MODULE:
-                    $stringid = 'randomqplusnamemodule';
-                    break;
-                case CONTEXT_COURSE:
-                    $stringid = 'randomqplusnamecourse';
-                    break;
-                case CONTEXT_COURSECAT:
-                    $stringid = 'randomqplusnamecoursecat';
-                    $categoryname = shorten_text($context->get_context_name(false), 100);
-                    break;
-                case CONTEXT_SYSTEM:
-                    $stringid = 'randomqplusnamesystem';
-                    break;
-                default: // Impossible.
-            }
-        } else {
-            // No question will ever be selected. So, let's warn the teacher.
-            $stringid = 'randomqnamefromtop';
-        }
-
-        if ($tagnames) {
-            $stringid .= 'tags';
-            $a = new stdClass();
-            if ($categoryname) {
-                $a->category = $categoryname;
-            }
-            $a->tags = implode(', ', array_map(function($tagname) {
-                return explode(',', $tagname)[1];
-            }, $tagnames));
-        } else {
-            $a = $categoryname ? : null;
-        }
-
-        $name = get_string($stringid, 'qtype_quizmanager', $a);
-
-        return shorten_text($name, 255);
     }
 
     protected function set_selected_question_name($question, $randomname) {
@@ -421,7 +226,7 @@ class qtype_quizmanager extends question_type {
             ORDER BY quizmanager.lastused;
         ';
 
-        $questionids = $DB->get_record_sql($query);
+        $questionids = $DB->get_records_sql($query);
         return $questionids;
     }
 
@@ -461,14 +266,16 @@ class qtype_quizmanager extends question_type {
                 continue;
             }
 
-            $question = question_bank::load_question($questionid, $allowshuffle);
+            $question = question_bank::load_question($questionid->questionid, $allowshuffle);
             $this->set_selected_question_name($question, $questiondata->name);
 
             // Update last used tag after question use
             $record = [];
             $record['questionid'] = $question->id;
             $record['lastused'] = time();
-            $this->insert_or_update_record('question_quizmanager', $record);
+
+	    $utils = new \qtype_quizmanager\utils();
+            $utils->insert_or_update_record('question_quizmanager', $record);
 
             return $question;
         }

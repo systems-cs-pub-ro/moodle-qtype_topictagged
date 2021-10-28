@@ -75,14 +75,15 @@ class qtype_quizmanager_edit_form extends question_edit_form {
                     document.getElementById("id_tagsdheader").style.display = \'none\';
                 </script>
         ');
-
+/*
         $actions = [];
         $actions[0] = get_string('addquestion', 'qtype_quizmanager');
         $actions[1] = get_string('syncdb', 'qtype_quizmanager');
         $actions[2] = get_string('downloadcsv', 'qtype_quizmanager');
 
         $mform->addElement('select', 'action', get_string('action', 'qtype_quizmanager'), $actions);
-        $mform->setType('action', PARAM_INT);
+	$mform->setType('action', PARAM_INT);
+*/
     }
 
     protected function data_preprocessing($question) {
@@ -102,7 +103,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
-        $difficulty = $difficultyoptions[intval($fromform->setdifficulty)];
+        $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"][0];
         $categoryid = strtok($fromform["category"], ',');
         $query = '
@@ -123,7 +124,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         ';
 
 
-        $questionids = $DB->get_record_sql($query);
+        $questionids = $DB->get_records_sql($query);
         // If no question with specified data is found, the question will not be saved
         if (!$questionids) {
             echo '

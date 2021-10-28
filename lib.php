@@ -46,3 +46,14 @@ function qtype_quizmanager_pluginfile($course, $cm, $context, $filearea, $args, 
     require_once($CFG->libdir . '/questionlib.php');
     question_pluginfile($course, $context, 'qtype_quizmanager', $filearea, $args, $forcedownload, $options);
 }
+
+function qtype_quizmanager_extend_navigation_course($navigation, $course, $context) {
+    if (has_capability('moodle/course:manageactivities', $context)) {
+        $url = new moodle_url('/question/type/quizmanager/index.php', array('id' => $course->id));
+        $settingsnode = navigation_node::create(get_string('editsettings', 'qtype_quizmanager'), $url, navigation_node::TYPE_SETTING,
+                null, null, new pix_icon('t/edit', ''));
+        $navigation->add_node($settingsnode);
+    }
+}
+
+    

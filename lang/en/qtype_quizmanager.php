@@ -51,7 +51,15 @@ $string['selectedby'] = '{$a->questionname} selected by {$a->randomname}';
 
 $string['action'] = 'Desired action';
 $string['addquestion'] = 'Add Question';
-$string['syncdb'] = 'Syncronize Database';
-$string['downloadcsv'] = 'Download CSV';
+$string['update_button'] = 'Update';
+$string['download_button'] = 'Download';
+$string['download_mode'] = 'File format';
+
+$string['download_header'] = 'Download questions';
+$string['update_header'] = 'Update database';
+
+$string['question_cat'] = 'Questions Category';
 
 $string['randomqname'] = 'Quiz Manager question {$a}';
+
+$string['editsettings'] = 'Quiz Manager Administration';
