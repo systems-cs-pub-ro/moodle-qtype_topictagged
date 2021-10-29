@@ -23,7 +23,7 @@ in order to avoid overusing some questions and ignoring others.
 You can download the zip from:
 #### latest [(master branch)](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master)
 
-* Login as an admin an go to `Site administration > Plugins > Install plugins`
+* Login as an admin and go to `Site administration > Plugins > Install plugins`
 * Upload the zip file. If you are prompted to add extra details, under `Plugin type` select `Question type (qtype)`
 * Go to `Show more > Rename the root directory` and type `quizmanager`
 * If your target directory is not writable, you will see a warning message. Proceed to
