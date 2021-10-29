@@ -14,7 +14,8 @@ Abbreviations: MXML(Moodle XML)
 This plugin is used for creating custom quizzes using questions from question bank and letting the Evaluator choose the
 difficulty and topic for every question.
 The plugin also updates the `last_used` tag with the time the specific question was used,
-in order to avoid overusing some questions and ignoring others.
+in order to avoid overusing some questions and ignoring others. The `last_used` tag can also be useful
+when reusing the questions in another Moodle instance
 
 # Installation
 
@@ -45,10 +46,7 @@ To install using git, type this command:
 ```
 git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/quizmanager
 ```
-or directly in the root of your Moodle install:
-```
-git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git question/type/quizmanager
-```
+
 
 # Adding Questions
 
