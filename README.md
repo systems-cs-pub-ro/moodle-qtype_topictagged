@@ -56,7 +56,7 @@ git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git question/
 * On the right side of the page, go to `Add > + a new question` and select the `quizmanager` question type
 * Select the category where you want your question to be from
 * Set the difficulty from the given list _(Easy - Hard)_
-* Set the topic that you want your question to have
+* Set the topic that you want your question to have (Note: topics are case **insensitive**)
 * Press the `Save changes` button
 * Repeat the instructions for all the questions you want in your quiz
 
