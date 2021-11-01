@@ -15,7 +15,7 @@ This plugin is used for creating custom quizzes using questions from question ba
 difficulty and topic for every question.
 The plugin also updates the `last_used` tag with the time the specific question was used,
 in order to avoid overusing some questions and ignoring others. The `last_used` tag can also be useful
-when reusing the questions in another Moodle instance
+when reusing the questions in another Moodle instance.
 
 # Installation
 
