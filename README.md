@@ -4,18 +4,22 @@
 1. [Installation](/README.md#installation)
 2. [Adding Questions](/README.md#adding-questions)
 3. [Managing Questions](/README.md#managing-questions)
-4. [User Stories](/README.md#user-stories)
-5. [References](/README.md#references)
+4. [Updating local database](/README.md#updating-local-database)
+5. [Downloading questions](/README.md#downloading-questions)
+6. [References](/README.md#references)
 
 # Introduction
 
 Abbreviations: MXML (Moodle XML)
 
-This plugin is used for creating custom quizzes using questions from question bank and letting the Evaluator choose the
-difficulty and topic for every question.
-The plugin also updates the `last_used` tag with the time the specific question was used,
-in order to avoid overusing some questions and ignoring others. The `last_used` tag can also be useful
-when reusing the questions in another Moodle instance.
+This plugin is used for creating quizzes that are unique for every student and contains questions with specific difficulties and topics chosen by evaluators.
+The selection of the questions is automated based on the options that evaluators choose, so you can have a good distribution of difficulty levels and topics.
+
+We want to choose the questions randomly based on the selected difficulty and topic, and to make sure that all the questions are used evenly.
+In order to do this consistently when reusing the same questions in multiple Moodle instances, we need to keep timestamps of every question last use.
+
+As defined in [Managing Questions](README.md#managing-questions), the `last_used` question tag keeps the time of the question was last use, measured in seconds since the Epoch (00:00:00 UTC, January 1, 1970).
+The plugin automatically updates the `last_used` tag after every questions use, and can [export it in multiple ways](/README.md#downloading-questions), so it can be imported and reused in a different Moodle instance.
 
 # Installation
 
@@ -26,17 +30,15 @@ You can download the zip from:
 
 Follow the steps below in your Moodle installation (administrative rights are required):
 
-* Login as an admin and go to `Site administration > Plugins > Install plugins`.
+* Go to `Site administration > Plugins > Install plugins`.
 * Upload the zip file. If you are prompted to add extra details, under `Plugin type` select `Question type (qtype)`.
 * Go to `Show more > Rename the root directory` and type `quizmanager`.
-* If your target directory is not writable, you will see a warning message. Proceed to
-[Manual installation](/README.md#manual-installation-from-zip-file).
-* Press `Install plugin from the ZIP file` button
+* If your target directory is not writable, you will see a warning message. Proceed to [Manual installation](/README.md#manual-installation-from-zip-file).
+* Press `Install plugin from the ZIP file` button.
 
 ### Manual Installation From zip file
 
-If you are prompted with the message `Plugin type location /your/moodle/path/question/type is not writable`,
-you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
+If you are prompted with the message `Plugin type location /your/moodle/path/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
 
 * Download the [zip file](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master).
 * Unzip the file in the correct location: `/your/moodle/path/question/type`.
@@ -50,32 +52,30 @@ To install using Git, use this command:
 git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/quizmanager
 ```
 
-
 # Adding Questions
+
+Questions are added using the Moodle interface, after the plugin was installed, from the quiz menu.
 
 * After creating a quiz, access it and press the `Edit quiz` button.
 * On the right side of the page, go to `Add > + a new question` and select the `quizmanager` question type.
 * Select the category where you want your question to be from.
-* Set the difficulty from the given list _(Easy - Hard)_
-* Set the topic that you want your question to have. Note: topics are case **insensitive**.
+* Set the difficulty from the given list _(Easy - Hard)_.
+* Set the topic that you want your question to have. Note: topics are case **insensitive**, and you can choose **only one** topic for one question.
 * Press the `Save changes` button.
 * Repeat the instructions for all the questions you want in your quiz.
 
 # Managing Questions
 
-The plugin can use any question types existent in the question bank, as long as the have the associated difficulty and topic tag.
+The plugin can use any [question types](https://docs.moodle.org/311/en/Question_types) existent in the question bank, as long as the have the associated difficulty and topic tag.
 
-If imported from an external database, the following rules must be followed:
+If questions are imported from an external source, using any [format](https://docs.moodle.org/311/en/Import_questions#Question_import_formats) supported by Moodle, the following rules must be followed:
 * The difficulty tag must be one from the following list: `Easy, Easy-Medium, Medium, Medium-Hard, Hard`.
-* The topic tag can take any form, as long as it is consistent with the set topic in the question edit form
-(see [Adding Questions](/README.md/#adding-questions)).
-* The `last_used` tag is optional (if not present will be considered 0), and the format is: `last_used:time`, where
-time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
+* The topic tag can take any form, as long as it is consistent with the set topic in the question edit form (see [Adding Questions](/README.md/#adding-questions)).
+* The `last_used` tag is optional (if not present will be considered 0), and the format is: `last_used:time`, where time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
 
 Details for the importing procedure can be found in the [Moodle documentation](https://docs.moodle.org/311/en/Moodle_XML_format).
 
-The following example can be used for importing questions with tags in MXML format (note that you can modify
-any detail about the questions, the example only shows the use of tags in MXML):
+The following example can be used for importing questions with tags in MXML format (note that you can modify any detail about the questions, the example only shows the use of tags in MXML):
 
 ```xml
 <?xml version="1.0" ?>
@@ -126,22 +126,7 @@ any detail about the questions, the example only shows the use of tags in MXML):
 </quiz>
 ```
 
-## __User stories__:
-|As a...|I want to...|so that...|
-|------|--------|-----|
-|evaluator|generate quizzes according to clear specifications|I can make sure that every student will have a similar quiz with different questions|
-|evaluator|choose a source for the questions: already loaded questions, new questions from a file or external database|I can choose what set of questions to use for every quiz|
-|evaluator|to have the option to choose from default templates|I can generate the quiz fast, without specifying all the data|
-|evaluator|choose if I want to use new questions or nor|avoid recently used questions|
-|evaluator|keep the default quiz setting available|set the timer, review options, etc.|
-|evaluator|add tags to my questions|specify the difficulty, topic and other relevant data|
-|evaluator|update the last used date of the questions|avoid reusing them|
-|Moodle administrator|avoid question duplicates|create a backup effectively|
-|Moodle administrator|not to crash the server|all the users can use Moodle|
-|student|have the quiz ready when I click "Attempt"|do not waste the allocated time|
-
-
-# __References__
+# References
 
 * [QType Template](https://github.com/marcusgreen/moodle-qtype_TEMPLATE/)
 * [Moodle Docs](https://docs.moodle.org/dev/Question_types)
