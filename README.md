@@ -9,7 +9,7 @@
 
 # Introduction
 
-Abbreviations: MXML(Moodle XML)
+Abbreviations: MXML (Moodle XML)
 
 This plugin is used for creating custom quizzes using questions from question bank and letting the Evaluator choose the
 difficulty and topic for every question.
