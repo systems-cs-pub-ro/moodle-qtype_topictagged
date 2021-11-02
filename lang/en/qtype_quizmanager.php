@@ -63,3 +63,8 @@ $string['question_cat'] = 'Questions Category';
 $string['randomqname'] = 'Quiz Manager question {$a}';
 
 $string['editsettings'] = 'Quiz Manager Administration';
+
+$string['setdifficulty_help'] = 'Set the difficulty of the question from the given list.';
+$string['settags_help'] = 'Set the topic you want your question to have. Topics are case insensitive and you can only choose one topic for one question.';
+$string['update_button_help'] = 'Update the local database to include the last_used tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
+$string['download_mode_help'] = 'Choose the format for the questions to be exported. The csv file contains the following informations: Question_text, sha256(Question_textQuestion_answer1,Question_answer2...), last_used tag. The MXML format is the standard Moodle xml format.';
