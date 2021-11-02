@@ -131,7 +131,7 @@ The following example can be used for importing questions with tags in MXML form
 After every question import, the local database that stores the `last_used` tag must be updated, or the questions will be used with the default value of 0, making it useless.
 
 To do that, in the main course page, navigate to the `Actions menu`(top right of the page, in the course header) and select `Quiz Manager Administration` option.
-Under the `Update database` header, select the [category](https://docs.moodle.org/311/en/Question_categories) of the questions and press the `update` button.
+Under the `Update database` section, select the [category](https://docs.moodle.org/311/en/Question_categories) of the questions and press the `update` button.
 
 # Downloading questions
 
@@ -144,7 +144,7 @@ The hash is used to identify the question, in case of having multiple questions 
 The hashed string has the following format: `sha256(Question_textQuestion_answer1,Question_answer2...)`.
 
 To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Quiz Manager Administration` option.
-Select the desired format and press the `Download` button under the `Download questions` header.
+Select the desired file format and the [category](https://docs.moodle.org/311/en/Question_categories), then press the `Download` button under the `Download questions` section.
 
 # References
 
