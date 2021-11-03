@@ -61,6 +61,9 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
             null, $autocompleteoptions);
 
+	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
+	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
+
         //Hide default name, text, id and grade forms
         $mform->addElement('html', '
                 <script>
@@ -75,15 +78,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
                     document.getElementById("id_tagsdheader").style.display = \'none\';
                 </script>
         ');
-/*
-        $actions = [];
-        $actions[0] = get_string('addquestion', 'qtype_quizmanager');
-        $actions[1] = get_string('syncdb', 'qtype_quizmanager');
-        $actions[2] = get_string('downloadcsv', 'qtype_quizmanager');
-
-        $mform->addElement('select', 'action', get_string('action', 'qtype_quizmanager'), $actions);
-	$mform->setType('action', PARAM_INT);
-*/
     }
 
     protected function data_preprocessing($question) {

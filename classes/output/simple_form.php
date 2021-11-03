@@ -58,7 +58,6 @@ class simple_form extends \moodleform {
 	// Update database entries
 	$mform->addElement('header', 'update_header', get_string('update_header', 'qtype_quizmanager'));
         $objs = array();
-//	$objs[] = $mform->createElement('static', 'category_label', 'question_category', get_string('question_cat', 'qtype_quizmanager'));
 	$objs[] = $mform->createElement('questioncategory', 'update_category', get_string('question_cat', 'qtype_quizmanager'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
         $mform->addElement('submit', 'update_button', get_string('update_button', 'qtype_quizmanager'));
@@ -67,7 +66,6 @@ class simple_form extends \moodleform {
 	// Download questions
 	$mform->addElement('header', 'download_header', get_string('download_header', 'qtype_quizmanager'));
         $objs = array();
-//	$objs[] = $mform->createElement('static', 'category_label', 'question_category', get_string('question_cat', 'qtype_quizmanager'));
 	$objs[] = $mform->createElement('questioncategory', 'download_category', get_string('question_cat', 'qtype_quizmanager'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
 
@@ -76,5 +74,8 @@ class simple_form extends \moodleform {
 	$objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
         $objs[] = $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_quizmanager'));
+
+	$mform->addHelpButton('fileformat_group', 'download_mode', 'qtype_quizmanager');
+	$mform->addHelpButton('category_group', 'update_button', 'qtype_quizmanager');
     }
 }
