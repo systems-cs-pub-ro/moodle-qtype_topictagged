@@ -1,4 +1,7 @@
-## __User stories__:
+# User Stories
+
+The table below is a summary of [user stories](https://www.atlassian.com/agile/project-management/user-stories) uses in the Quiz Manager Moodle plugin.
+
 |As a...|I want to...|so that...|
 |------|--------|-----|
 |evaluator|generate quizzes according to clear specifications|I can make sure that every student will have a similar quiz with different questions|
