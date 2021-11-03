@@ -1,11 +1,11 @@
-# Contents
+# Content
 
 0. [Introduction](/README.md#introduction)
 1. [Installation](/README.md#installation)
 2. [Adding Questions](/README.md#adding-questions)
 3. [Managing Questions](/README.md#managing-questions)
-4. [Updating local database](/README.md#updating-local-database)
-5. [Downloading questions](/README.md#downloading-questions)
+4. [Updating the Local Database](/README.md#updating-the-local-database)
+5. [Exporting Questions](/README.md#exporting-questions)
 6. [References](/README.md#references)
 
 # Introduction
@@ -16,12 +16,10 @@ This plugin is used for creating quizzes that are unique for every student and c
 The selection of the questions is automated based on options from evaluators.
 The aim is to have a fair distribution of difficulty levels and topics among the unique quizzes created for each student.
 
-We want to choose the questions randomly based on the selected difficulty and topic, and to make sure that all the questions are used evenly.
 In order to use all questions evenly, we keep a timestamp marking when each question was last used.
 There will be a preference to use questions that haven't been recently used.
-
 As defined in [Managing Questions](README.md#managing-questions), the `last_used` question tag keeps the time of the question was last used, measured in seconds since the Epoch (00:00:00 UTC, January 1, 1970).
-The plugin automatically updates the `last_used` tag after every questions use, and can [export it in multiple ways](/README.md#downloading-questions), so it can be imported and reused in a different course or in another Moodle instance.
+The plugin automatically updates the `last_used` tag after every questions use, and can [export it in multiple ways](/README.md#exporting-questions), so it can be imported and reused in a different course or in another Moodle instance.
 
 # Installation
 
@@ -142,14 +140,13 @@ Otherwise the `last_used` tag will be set to `0`, losing its meaning.
 To do that, in the main course page, navigate to the `Actions menu`(top right of the page, in the course header) and select `Quiz Manager Administration` option.
 Under the `Update database` section, select the [category](https://docs.moodle.org/311/en/Question_categories) of the questions and press the `update` button.
 
-# Downloading questions
+# Exporting questions
 
-You can download the questions in order to reuse them in a different Moodle instance.
+You can export the questions in order to reuse them in a different Moodle instance.
 You can choose the regular [MXML](https://docs.moodle.org/310/en/Moodle_XML_format) format, or a CSV file format that contains three columns: question text, question hash, `last_used` tag.
 
-`Question text,Question hash,last used tag`
-
-The hash is used to identify the question, in case of having multiple questions with the same question text.
+The question hash is used to uniquely identify the question such that the metadata (i.e. `last_used` field) can be updated in an external database.
+This requires further processing according to the chosen storage solution.
 The hashed string has the following format: `sha256(Question_textQuestion_answer1,Question_answer2...)`.
 
 To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Quiz Manager Administration` option.
