@@ -1,6 +1,6 @@
 # User Stories
 
-The table below is a summary of [user stories](https://www.atlassian.com/agile/project-management/user-stories) uses in the Quiz Manager Moodle plugin.
+The table below is a summary of [user stories](https://www.atlassian.com/agile/project-management/user-stories) for the Quiz Manager Moodle plugin.
 
 |As a...|I want to...|so that...|
 |------|--------|-----|
