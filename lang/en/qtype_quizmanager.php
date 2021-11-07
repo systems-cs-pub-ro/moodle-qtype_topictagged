@@ -24,11 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'quizmanager';
-$string['pluginname_help'] = 'Create a quizmanager question type with insert question description here.';
+$string['pluginname_help'] = 'Select an existing question based on topic and difficulty';
 $string['pluginname_link'] = 'question/type/quizmanager';
 $string['pluginnameadding'] = 'Adding a quizmanager question';
 $string['pluginnameediting'] = 'Editing a quizmanager question';
-$string['pluginnamesummary'] = 'A quizmanager question type that allows something to be done that can test a student on some understanding.';
+$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';

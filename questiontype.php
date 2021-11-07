@@ -245,6 +245,13 @@ class qtype_quizmanager extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
+	$isPreview = false;
+	// determine from trace if this quiz is a preview
+	foreach (debug_backtrace() as $call) {
+		if ($call['function'] == 'quiz_prepare_and_start_new_attempt')
+			// $call['args'][0] is a `quiz` object
+			$isPreview = $call['args'][0]->is_preview_user();
+	}
         $categoryid = $questiondata->categoryobject->id;
         $topic = strtok($questiondata->questiontext, "-");
         $difficulty = strtok("\n");
@@ -275,7 +282,8 @@ class qtype_quizmanager extends question_type {
             $record['lastused'] = time();
 
 	    $utils = new \qtype_quizmanager\utils();
-            $utils->insert_or_update_record('question_quizmanager', $record);
+	    if (!$isPreview)
+	        $utils->insert_or_update_record('question_quizmanager', $record);
 
             return $question;
         }
@@ -283,7 +291,7 @@ class qtype_quizmanager extends question_type {
     }
 
     /**
-     * executed at runtime (e.g. in a quiz or preview 
+     * executed at runtime (e.g. in a quiz or preview)
      */
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
