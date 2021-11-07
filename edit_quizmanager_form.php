@@ -57,9 +57,8 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 	$mform->setType('settags', PARAM_TEXT);
 	$mform->addRule('settags', get_string('settagsempty', 'qtype_quizmanager'), 'required', null, 'server');
 	
-	$mform->addElement('static', 'topic_label', 'topic', get_string('settags_help', 'qtype_quizmanager'));
-
 	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
+	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
 
         //Hide default name, text, id and grade forms
         $mform->addElement('html', '

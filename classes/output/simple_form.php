@@ -75,7 +75,7 @@ class simple_form extends \moodleform {
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
         $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_quizmanager'));
 
-	$mform->addHelpButton('download_header', 'download_mode', 'qtype_quizmanager');
-	$mform->addHelpButton('update_header', 'update_button', 'qtype_quizmanager');
+	$mform->addHelpButton('download_header', 'download', 'qtype_quizmanager');
+	$mform->addHelpButton('update_header', 'update_header', 'qtype_quizmanager');
     }
 }
