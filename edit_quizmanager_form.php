@@ -53,13 +53,10 @@ class qtype_quizmanager_edit_form extends question_edit_form {
             $difficultyoptions);
 
         //Add tags field
-        $autocompleteoptions = array(
-            'multiple' => true,
-            'tags' => true,
-            'noselectionstring' => get_string('settagsempty', 'qtype_quizmanager'),
-        );
-        $mform->addElement('autocomplete', 'settags', get_string('settags', 'qtype_quizmanager'),
-            null, $autocompleteoptions);
+	$mform->addElement('text', 'settags', get_string('settags', 'qtype_quizmanager'), 'size=20');
+	$mform->setType('settags', PARAM_TEXT);
+	$mform->addRule('settags', get_string('settagsempty', 'qtype_quizmanager'), 'required', null, 'server');
+	
 	$mform->addElement('static', 'topic_label', 'topic', get_string('settags_help', 'qtype_quizmanager'));
 
 	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
@@ -98,7 +95,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
-        $topic = $fromform["settags"][0];
+        $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
         $query = '
             SELECT tag_instance.itemid
@@ -116,7 +113,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
                 JOIN {question} question ON question.id = tag_instance.itemid
             WHERE question.category = ' . $categoryid . '
         ';
-
 
         $questionids = $DB->get_records_sql($query);
         // If no question with specified data is found, the question will not be saved

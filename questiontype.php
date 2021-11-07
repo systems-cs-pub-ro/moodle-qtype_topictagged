@@ -112,7 +112,7 @@ class qtype_quizmanager extends question_type {
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
             $form->questiontext = array(
-                'text'	 => $form->settags[0] . "-" . $questiondifficulty,
+                'text'	 => $form->settags . "-" . $questiondifficulty,
                 'format' => 0
             );
 
@@ -134,7 +134,7 @@ class qtype_quizmanager extends question_type {
         // We also force the question name to be 'Random (categoryname)'.
         $category = $DB->get_record('question_categories',
                 array('id' => $question->category), '*', MUST_EXIST);
-        $updateobject->topic = $question->settags[0];
+        $updateobject->topic = $question->settags;
         $updateobject->difficulty = $question->setdifficulty;
 
         return $DB->update_record('question', $updateobject);
