@@ -245,13 +245,11 @@ class qtype_quizmanager extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
-	$isPreview = false;
 	// determine from trace if this quiz is a preview
-	foreach (debug_backtrace() as $call) {
-		if ($call['function'] == 'quiz_prepare_and_start_new_attempt')
-			// $call['args'][0] is a `quiz` object
-			$isPreview = $call['args'][0]->is_preview_user();
-	}
+	$contextid = $questiondata->contextid;
+	$context = context::instance_by_id($contextid);
+	$isPreview = has_capability('mod/quiz:preview', $context);
+
         $categoryid = $questiondata->categoryobject->id;
         $topic = strtok($questiondata->questiontext, "-");
         $difficulty = strtok("\n");
