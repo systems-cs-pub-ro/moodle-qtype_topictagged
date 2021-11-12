@@ -280,8 +280,27 @@ class qtype_quizmanager extends question_type {
             $record['lastused'] = time();
 
 	    $utils = new \qtype_quizmanager\utils();
-	    if (!$isPreview)
+	    if (!$isPreview) {
 	        $utils->insert_or_update_record('question_quizmanager', $record);
+		// get all tags
+	        $question_tags = core_tag_tag::get_item_tags_array('core_question', 'question', $questionid->questionid);
+
+	        $old_tag = '';
+
+	        // search for `last_used` tag
+	        foreach ($question_tags as $tag) {
+		    if (substr($tag, 0, 10) == 'last_used:') {
+		        $old_tag = $tag;
+		    }
+	        }
+	        if ($old_tag != '') {
+	    	    // delete tag
+		    core_tag_tag::remove_item_tag('core_question', 'question', $questionid->questionid, $old_tag);
+	        }
+
+	        // add new `last_used` tag
+	        core_tag_tag::add_item_tag('core_question', 'question', $questionid->questionid, $context, 'last_used:' . $record['lastused']);
+	    }
 
             return $question;
         }
