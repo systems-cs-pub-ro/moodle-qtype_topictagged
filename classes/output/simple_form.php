@@ -73,9 +73,9 @@ class simple_form extends \moodleform {
 	$objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_quizmanager'));
 	$objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
-        $objs[] = $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_quizmanager'));
+        $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_quizmanager'));
 
-	$mform->addHelpButton('fileformat_group', 'download_mode', 'qtype_quizmanager');
-	$mform->addHelpButton('category_group', 'update_button', 'qtype_quizmanager');
+	$mform->addHelpButton('download_header', 'download', 'qtype_quizmanager');
+	$mform->addHelpButton('update_header', 'update_header', 'qtype_quizmanager');
     }
 }

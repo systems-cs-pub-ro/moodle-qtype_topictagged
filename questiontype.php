@@ -112,7 +112,7 @@ class qtype_quizmanager extends question_type {
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
             $form->questiontext = array(
-                'text'	 => $form->settags[0] . "-" . $questiondifficulty,
+                'text'	 => $form->settags . "-" . $questiondifficulty,
                 'format' => 0
             );
 
@@ -134,7 +134,7 @@ class qtype_quizmanager extends question_type {
         // We also force the question name to be 'Random (categoryname)'.
         $category = $DB->get_record('question_categories',
                 array('id' => $question->category), '*', MUST_EXIST);
-        $updateobject->topic = $question->settags[0];
+        $updateobject->topic = $question->settags;
         $updateobject->difficulty = $question->setdifficulty;
 
         return $DB->update_record('question', $updateobject);
@@ -245,6 +245,11 @@ class qtype_quizmanager extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
+	// determine from trace if this quiz is a preview
+	$contextid = $questiondata->contextid;
+	$context = context::instance_by_id($contextid);
+	$isPreview = has_capability('mod/quiz:preview', $context);
+
         $categoryid = $questiondata->categoryobject->id;
         $topic = strtok($questiondata->questiontext, "-");
         $difficulty = strtok("\n");
@@ -275,7 +280,8 @@ class qtype_quizmanager extends question_type {
             $record['lastused'] = time();
 
 	    $utils = new \qtype_quizmanager\utils();
-            $utils->insert_or_update_record('question_quizmanager', $record);
+	    if (!$isPreview)
+	        $utils->insert_or_update_record('question_quizmanager', $record);
 
             return $question;
         }
@@ -283,7 +289,7 @@ class qtype_quizmanager extends question_type {
     }
 
     /**
-     * executed at runtime (e.g. in a quiz or preview 
+     * executed at runtime (e.g. in a quiz or preview)
      */
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);

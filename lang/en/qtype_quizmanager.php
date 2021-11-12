@@ -24,11 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'quizmanager';
-$string['pluginname_help'] = 'Create a quizmanager question type with insert question description here.';
+$string['pluginname_help'] = 'Select an existing question based on topic and difficulty';
 $string['pluginname_link'] = 'question/type/quizmanager';
 $string['pluginnameadding'] = 'Adding a quizmanager question';
 $string['pluginnameediting'] = 'Editing a quizmanager question';
-$string['pluginnamesummary'] = 'A quizmanager question type that allows something to be done that can test a student on some understanding.';
+$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';
@@ -49,22 +49,21 @@ $string['randomqplusnametags'] = 'Random ({$a->category} and subcategories, tags
 
 $string['selectedby'] = '{$a->questionname} selected by {$a->randomname}';
 
-$string['action'] = 'Desired action';
-$string['addquestion'] = 'Add Question';
 $string['update_button'] = 'Update';
 $string['download_button'] = 'Download';
 $string['download_mode'] = 'File format';
 
-$string['download_header'] = 'Download questions';
-$string['update_header'] = 'Update database';
+$string['download_header'] = 'Export Questions';
+$string['update_header'] = 'Update Database';
 
 $string['question_cat'] = 'Questions Category';
 
-$string['randomqname'] = 'Quiz Manager question {$a}';
+$string['randomqname'] = 'Quiz Manager Question {$a}';
 
 $string['editsettings'] = 'Quiz Manager Administration';
 
 $string['setdifficulty_help'] = 'Set the difficulty of the question from the given list.';
-$string['settags_help'] = 'Set the topic you want your question to have. Topics are case insensitive and you can only choose one topic for one question.';
-$string['update_button_help'] = 'Update the local database to include the `last_used` tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
-$string['download_mode_help'] = 'Choose the format for the questions to be exported.<ol><li><b><i>MXML (Recommanded)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle#custom-quiz-moodle-plugin> README.md </a> for more information</li></ol>';
+$string['settags_help'] = 'Topics are case insensitive and you can only choose one topic for one question.';
+$string['update_header_help'] = 'Update the local database to include the `last_used` tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
+$string['download'] = 'Exporting Questions';
+$string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle/tree/master#exporting-questions> Exporting Questions </a> for more information.</li></ol>';
