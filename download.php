@@ -48,7 +48,6 @@ $query = '
 ';
 
 $entries = $DB->get_records_sql($query);
-$string = "question_text,answers,last_used\n";
 
 /**
  * Iterate trough questions and create csv string
@@ -56,7 +55,7 @@ $string = "question_text,answers,last_used\n";
  * Save all content of the file in a string, to be used with create_file_from_string function
  */
 $utils = new \qtype_quizmanager\utils();
-$str = '';
+$str= "question_text,question hash,last_used tag\n";
 foreach($entries as $entry) {
 	$csv_content = array();
 	$plaintext = $entry->question_text . $entry->answers;
