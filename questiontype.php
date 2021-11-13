@@ -280,6 +280,7 @@ class qtype_quizmanager extends question_type {
             $record['lastused'] = time();
 
 	    $utils = new \qtype_quizmanager\utils();
+
 	    if (!$isPreview) {
 	        $utils->insert_or_update_record('question_quizmanager', $record);
 		// get all tags
