@@ -55,15 +55,18 @@ class utils {
 	/**
 	 * Parse string and format it for a CSV file
 	 */
-	public function parse_string_for_csv($raw_string, $delimiter = ',', $enclosure = '"') {
-		$tmp_fp = fopen('php://temp', 'r+');
+	public function parse_string_for_csv($raw_values, $delimiter = ',', $enclosure = '"') {
+		// Create a temporary file to use fputcsv in
+		$tmp_fp = fopen('php://temp.csv', 'r+');
 
-		fputcsv($tmp_fp, array(trim($raw_string, '"')), $delimiter, $enclosure);
+		fputcsv($tmp_fp, $raw_values, $delimiter, $enclosure);
+
+		// Take the string from the temporary file
 		rewind($tmp_fp);
 		$data = fgets($tmp_fp);
 
 		fclose($tmp_fp);
-		return rtrim($data, "\n");
+		return $data;
 	}
 }
 

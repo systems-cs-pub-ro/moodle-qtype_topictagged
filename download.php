@@ -50,20 +50,23 @@ $query = '
 $entries = $DB->get_records_sql($query);
 $string = "question_text,answers,last_used\n";
 
-// Iterate trough questions and create csv string
+/**
+ * Iterate trough questions and create csv string
+ * Parse every line using parse_string_for_csv function
+ * Save all content of the file in a string, to be used with create_file_from_string function
+ */
 $utils = new \qtype_quizmanager\utils();
-foreach ($entries as $entry) {
+$str = '';
+foreach($entries as $entry) {
+	$csv_content = array();
 	$plaintext = $entry->question_text . $entry->answers;
-	$string .= $utils->parse_string_for_csv($entry->question_text);
-	$string .= ',';
-	$string .= hash("sha256", $plaintext, false);
-	$string .= ',';
-	$string .= $entry->last_used;
-	$string .= "\n";
+	$csv_content[] = $entry->question_text;
+	$csv_content[] = hash("sha256", $plaintext, false);
+	$csv_content[] = $entry->last_used;
+
+	$str .= $utils->parse_string_for_csv($csv_content);
 }
 
-// Set file options
-//require_login($course, true);
 $fs = get_file_storage();
 
 $fileinfo = array(
@@ -83,10 +86,11 @@ $file->delete();
 }
 
 // Create and send file to user
-$fs->create_file_from_string($fileinfo, $string);
+$fs->create_file_from_string($fileinfo, $str);
 $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
+//var_dump($file); die();
 $options = [];
 $options['dontdie'] = true;
 send_stored_file($file, 0, 0, false, $options);
