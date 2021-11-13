@@ -51,14 +51,15 @@ $entries = $DB->get_records_sql($query);
 $string = "question_text,answers,last_used\n";
 
 // Iterate trough questions and create csv string
+$utils = new \qtype_quizmanager\utils();
 foreach ($entries as $entry) {
-$plaintext = $entry->question_text . $entry->answers;
-$string .= '"' . $entry->question_text . '"';
-$string .= ',';
-$string .= hash("sha256", $plaintext, false);
-$string .= ',';
-$string .= $entry->last_used;
-$string .= "\n";
+	$plaintext = $entry->question_text . $entry->answers;
+	$string .= $utils->parse_string_for_csv($entry->question_text);
+	$string .= ',';
+	$string .= hash("sha256", $plaintext, false);
+	$string .= ',';
+	$string .= $entry->last_used;
+	$string .= "\n";
 }
 
 // Set file options

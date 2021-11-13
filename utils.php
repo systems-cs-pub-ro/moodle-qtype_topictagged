@@ -51,6 +51,20 @@ class utils {
 		    $DB->insert_record($table, $record);
 		}
 	}
+
+	/**
+	 * Parse string and format it for a CSV file
+	 */
+	public function parse_string_for_csv($raw_string, $delimiter = ',', $enclosure = '"') {
+		$tmp_fp = fopen('php://temp', 'r+');
+
+		fputcsv($tmp_fp, array(trim($raw_string, '"')), $delimiter, $enclosure);
+		rewind($tmp_fp);
+		$data = fgets($tmp_fp);
+
+		fclose($tmp_fp);
+		return rtrim($data, "\n");
+	}
 }
 
 
