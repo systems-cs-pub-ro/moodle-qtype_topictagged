@@ -41,7 +41,8 @@ class qtype_quizmanager_edit_form extends question_edit_form {
     protected function definition_inner($mform) {
         //Add fields specific to this question type
         //remove any that come with the parent class you don't want
-	
+	global $DB, $CFG;
+
         //Add difficulty field
         $difficultyoptions = [];
         $difficultyoptions[0] = 'Easy';
@@ -52,9 +53,36 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
             $difficultyoptions);
 
-        //Add tags field
-	$mform->addElement('text', 'settags', get_string('settags', 'qtype_quizmanager'), 'size=20');
-	$mform->setType('settags', PARAM_TEXT);
+	// Get all tags used in the current context to use as selection list for the topic
+        $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
+        $tagstrings = [];
+        foreach ($tags as $tag) {
+            $tagstrings[$tag->name] = $tag->name;
+        }
+
+        $showstandard = core_tag_area::get_showstandard('core_question', 'question');
+        if ($showstandard != core_tag_tag::HIDE_STANDARD) {
+            $namefield = empty($CFG->keeptagnamecase) ? 'name' : 'rawname';
+            $standardtags = $DB->get_records('tag',
+                    array('isstandard' => 1, 'tagcollid' => core_tag_area::get_collection('core', 'question')),
+                    $namefield, 'id,' . $namefield);
+            foreach ($standardtags as $standardtag) {
+			$tagstrings[$standardtag->$namefield] = $standardtag->$namefield;
+            }
+        }
+
+	// Remove all difficulty and last_used tags from the list
+	foreach ($tagstrings as $standardtag) {
+		if (strpos($standardtag, "last_used") !== false)
+			unset($tagstrings[$standardtag]);
+
+		foreach ($difficultyoptions as $diffoption) {
+			if (strcasecmp($standardtag, $diffoption) == 0)
+				unset($tagstrings[$standardtag]);
+		}
+	}
+
+	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_quizmanager'), $tagstrings);
 	$mform->addRule('settags', get_string('settagsempty', 'qtype_quizmanager'), 'required', null, 'server');
 	
 	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
@@ -124,7 +152,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
             ';
             die();
             return false;
-        }       
+        }
     }
 
     public function qtype() {
