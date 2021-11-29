@@ -289,7 +289,6 @@ class qtype_quizmanager extends question_type {
         $topic = strtok($questiondata->questiontext, "-");
         $difficulty = strtok("\n");
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
-	    shuffle($available);
 
         if ($forcequestionid !== null) {
             $forcedquestionkey = array_search($forcequestionid, $available);
