@@ -83,7 +83,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 	}
 
 	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_quizmanager'), $tagstrings);
-	$mform->addRule('settags', get_string('settagsempty', 'qtype_quizmanager'), 'required', null, 'server');
 	
 	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
 	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
