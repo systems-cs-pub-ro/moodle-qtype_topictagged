@@ -87,6 +87,70 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
 	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
 
+	// Add text containing the total number of available questions
+	$mform->addElement('html', '
+		<div class="form-control">
+			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_quizmanager') . '</label>
+			<b> <label id=id_availablequestions_count></label> </b>
+		</div>
+	');
+
+	$categories = array();
+	foreach ($mform->_elements[1]->_optGroups as $category) {
+		foreach ($category['options'] as $option) {
+			$value = $option["attr"]["value"];
+			$categoryid = strtok($value, ',');
+			array_push($categories, $categoryid);
+		}
+	}
+	
+
+	// query data
+	$questions_number = array();
+	// for each category
+	for ($category = 0; $category < count($categories); $category++) {
+		$difficulties = array();
+		// for each difficulty
+		foreach($difficultyoptions as $difficulty) {
+			$topics = array();
+			// for each topic
+			foreach($tagstrings as $topic) {
+				// count available questions
+				$value = 0;
+				// Actual Query
+				$query = '
+
+					SELECT tag_instance.itemid
+					FROM {tag} tag
+					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
+					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+					INTERSECT
+					SELECT tag_instance.itemid
+					FROM {tag} tag                                                                 
+					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
+					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+					INTERSECT
+					SELECT question.id
+					FROM {tag_instance} tag_instance                                               
+					    JOIN {question} question ON question.id = tag_instance.itemid              
+					WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0          
+				 ';
+				$questionids = $DB->get_records_sql($query);
+				$value = count($questionids);			
+				$topics[$topic] = $value;
+			}
+			$difficulties[$difficulty] = $topics;
+		}
+		$questions_number[$category] = $difficulties;
+	}
+
+	// export as JSON to a hidden text HTML tag
+	// add JS script
+	$mform->addElement('html', '
+		<noscript id=id_json>' . json_encode($questions_number) . '</noscript>
+                <script src=type/quizmanager/display_count.js></script>
+        ');
+ 
         //Hide default name, text, id and grade forms
         $mform->addElement('html', '
                 <script>
