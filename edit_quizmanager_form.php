@@ -108,11 +108,15 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 
 	// query data
 	$questions_number = array();
+	// for each category
 	for ($category = 0; $category < count($categories); $category++) {
 		$difficulties = array();
+		// for each difficulty
 		foreach($difficultyoptions as $difficulty) {
 			$topics = array();
+			// for each topic
 			foreach($tagstrings as $topic) {
+				// count available questions
 				$value = 0;
 				// Actual Query
 				$query = '
@@ -140,11 +144,9 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 		}
 		$questions_number[$category] = $difficulties;
 	}
-	/*
-	echo("<pre>"); 
-	var_dump($query);
-	echo("</pre>"); die();
-	 */
+
+	// export as JSON to a hidden text HTML tag
+	// add JS script
 	$mform->addElement('html', '
 		<noscript id=id_json>' . json_encode($questions_number) . '</noscript>
                 <script src=type/quizmanager/display_count.js></script>
