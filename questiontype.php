@@ -220,13 +220,48 @@ class qtype_quizmanager extends question_type {
                 SELECT question.id
                 FROM {tag_instance} tag_instance
                     JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = ' . $categoryid . '
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
             ) as questionids
                 LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
             ORDER BY quizmanager.lastused;
         ';
 
         $questionids = $DB->get_records_sql($query);
+
+	/** If there are no questions found with the coresponding topic and difficulty,
+	 * select a question only with the given difficulty.
+	 * If there are still no questions found, select a random question from the category.
+	 */
+	if (count($questionids) == 0) {
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
+		    ORDER BY quizmanager.lastused;
+		';
+		$questionids = $DB->get_records_sql($query);
+
+		if (count($questionids) == 0) {
+			$query = '
+				SELECT question.id "questionid", 0 "lastused"
+				FROM {question} question
+				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+				ORDER BY RAND();
+			';
+			$questionids = $DB->get_records_sql($query);
+		}
+	}
+
         return $questionids;
     }
 
@@ -254,7 +289,7 @@ class qtype_quizmanager extends question_type {
         $topic = strtok($questiondata->questiontext, "-");
         $difficulty = strtok("\n");
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
-        shuffle($available);
+	    shuffle($available);
 
         if ($forcequestionid !== null) {
             $forcedquestionkey = array_search($forcequestionid, $available);
