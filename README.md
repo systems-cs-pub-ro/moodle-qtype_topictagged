@@ -1,3 +1,4 @@
+# <img src=".media/icon.png" height="50" style="float:left"/> Tagged Question Selector QType
 # Content
 
 0. [Introduction](/README.md#introduction)
