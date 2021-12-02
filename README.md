@@ -1,3 +1,4 @@
+# <img src=".media/icon.png" height="50" style="float:left"/> Tagged Question Selector QType
 # Content
 
 0. [Introduction](/README.md#introduction)
@@ -60,13 +61,16 @@ Questions are added to a quiz using the Moodle interface, after the plugin was i
 **Note:** You have to import questions to the question bank beforehand.
 
 * After creating a quiz, access it and press the `Edit quiz` button.
-* On the right side of the page, go to `Add > + a new question` and select the `quizmanager` question type.
+* On the right side of the page, go to `Add > + a new question` and select the `Topic Tagged` question type.
 * Select the category where you want your question to be from.
 * Set the difficulty from the given list _(Easy - Hard)_.
 * Set the topic that you want your question to have.
-  Note: topics are case **insensitive**, and you can choose **only one** topic for one question.
+  Note: You can choose **only one** topic for one question.
 * Press the `Save changes` button.
 * Repeat the instructions for all the questions you want in your quiz.
+
+**Note:** If you preview the added question, you will only see the first selected question from the question bank, and the `last_used` tag will not be updated.
+The students will each receive different questions having the selected difficulty and topic.
 
 # Managing Questions
 
@@ -74,9 +78,9 @@ The plugin can use any [question type](https://docs.moodle.org/311/en/Question_t
 
 If questions are imported from an external source, using any [format](https://docs.moodle.org/311/en/Import_questions#Question_import_formats) supported by Moodle, the following rules must be followed:
 * The difficulty tag must be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
-* The topic tag can take any form, as long as it is consistent with the topic set in the question edit form (see [Adding Questions](/README.md/#adding-questions)).
 * The `last_used` tag is optional (if not present, it will be considered `0`).
   The format is: `last_used:time`, where time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
+* The topic tags **MUST NOT** include the character `-`, as it is internally used by the plugin as a delimiter between tags.
 
 Details on the import procedure can be found in the [Moodle documentation](https://docs.moodle.org/311/en/Moodle_XML_format).
 

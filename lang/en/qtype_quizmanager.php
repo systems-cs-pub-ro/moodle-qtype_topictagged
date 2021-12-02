@@ -23,10 +23,10 @@
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'quizmanager';
+$string['pluginname'] = 'Topic Tagged Question';
 $string['pluginname_help'] = 'Select an existing question based on topic and difficulty';
 $string['pluginname_link'] = 'question/type/quizmanager';
-$string['pluginnameadding'] = 'Adding a quizmanager question';
+$string['pluginnameadding'] = 'Adding a topic tagged question';
 $string['pluginnameediting'] = 'Editing a quizmanager question';
 $string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
 $string['setdifficulty'] = 'Set difficulty';
@@ -67,3 +67,4 @@ $string['settags_help'] = 'Topics are user-defined tags that are added to the qu
 $string['update_header_help'] = 'Update the local database to include the `last_used` tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
 $string['download'] = 'Exporting Questions';
 $string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle/tree/master#exporting-questions> Exporting Questions </a> for more information.</li></ol>';
+$string['available_questoins'] = 'Available Questions Count:';
