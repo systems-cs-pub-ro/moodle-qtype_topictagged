@@ -162,9 +162,20 @@ class qtype_quizmanager_edit_form extends question_edit_form {
                     document.getElementById("fitem_id_defaultmark").style.display = \'none\';
                     document.getElementById("fitem_id_generalfeedback").style.display = \'none\';
                     document.getElementById("fitem_id_idnumber").style.display = \'none\';
-                    document.getElementById("id_tagsdheader").style.display = \'none\';
                 </script>
         ');
+
+    }
+
+    public function add_action_buttons($cancel = true, $submitlabel = null) {
+	parent::add_action_buttons($cancel, $submitlabel);
+
+	$mform = $this->_form;
+	$mform->addElement('html', '
+		<script>
+			document.getElementById("id_updatebutton").style.display = \'none\';
+			document.getElementById("id_tagsheader").style.display = \'none\';
+		</script>');
     }
 
     protected function data_preprocessing($question) {
