@@ -212,7 +212,7 @@ class qtype_topictagged extends question_type {
 		    SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
 		    FROM {question} question
 			LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
-		    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
+		    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged" AND qtype != "random"
 		    ORDER BY topictagged.lastused;
 		';
 	} else if ($topic == "Any topic") {

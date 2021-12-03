@@ -127,7 +127,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 					$query = '
 
 						SELECT id from {question}
-						WHERE category = ' . $categories[$category] . ' AND hidden = 0 AND qtype != "topictagged"
+						WHERE category = ' . $categories[$category] . ' AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
 					';
 				} else if ($difficulty == 'Any difficulty') {
 					$query = '
@@ -245,7 +245,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 		$query = '
 
 			SELECT id from {question}
-			WHERE category = ' . $categoryid . ' AND hidden = 0 AND qtype != "topictagged"
+			WHERE category = ' . $categoryid . ' AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
 		';
 	} else if ($topic == "Any topic") {
 		$query = '
