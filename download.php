@@ -17,7 +17,7 @@
 /**
  * 
  *
- * @package   qtype_quizmanager
+ * @package   qtype_topictagged
  * @copyright 2021 Andrei David; Ștefan Jumărea
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,12 +37,12 @@ require_login($course);
 // Get all questions form database with their answers and last_used tag
 global $DB;
 $query = '
-    SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", quizmanager.lastused "last_used"
+    SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", topictagged.lastused "last_used"
     FROM {question} question
         JOIN {question_answers} answers
             ON answers.question = question.id
-        JOIN {question_quizmanager} quizmanager
-            ON question.id = quizmanager.questionid
+        JOIN {question_topictagged} topictagged
+            ON question.id = topictagged.questionid
     WHERE question.category = ' . $categoryid . '
     GROUP BY question.id;
 ';
@@ -54,7 +54,7 @@ $entries = $DB->get_records_sql($query);
  * Parse every line using parse_string_for_csv function
  * Save all content of the file in a string, to be used with create_file_from_string function
  */
-$utils = new \qtype_quizmanager\utils();
+$utils = new \qtype_topictagged\utils();
 $str= "question_text,question hash,last_used tag\n";
 foreach($entries as $entry) {
 	$csv_content = array();
@@ -70,7 +70,7 @@ $fs = get_file_storage();
 
 $fileinfo = array(
 'contextid' => $contextid,
-'component' => 'qtype_quizmanager',
+'component' => 'qtype_topictagged',
 'filearea' => 'downloadarea',
 'itemid' => 0,
 'filepath' => '/',

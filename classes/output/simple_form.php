@@ -17,13 +17,13 @@
 /**
  * Activity renderer class.
  *
- * @package   qtype_quizmanager
+ * @package   qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace qtype_quizmanager\output;
+namespace qtype_topictagged\output;
 
 use moodle_url;
 use renderable;
@@ -46,7 +46,7 @@ class simple_form extends \moodleform {
      * @param int $courseid Course ID
      */
     public function __construct(int $courseid) {
-	$return_url = '/question/type/quizmanager/index.php?id=' . $courseid;
+	$return_url = '/question/type/topictagged/index.php?id=' . $courseid;
         $this->courseid = $courseid;
 	parent::__construct($return_url);
     }
@@ -56,26 +56,26 @@ class simple_form extends \moodleform {
 	$contexts = [\context_course::instance($this->courseid)];
 
 	// Update database entries
-	$mform->addElement('header', 'update_header', get_string('update_header', 'qtype_quizmanager'));
+	$mform->addElement('header', 'update_header', get_string('update_header', 'qtype_topictagged'));
         $objs = array();
-	$objs[] = $mform->createElement('questioncategory', 'update_category', get_string('question_cat', 'qtype_quizmanager'), array('contexts' => $contexts));
+	$objs[] = $mform->createElement('questioncategory', 'update_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
-        $mform->addElement('submit', 'update_button', get_string('update_button', 'qtype_quizmanager'));
+        $mform->addElement('submit', 'update_button', get_string('update_button', 'qtype_topictagged'));
 	$mform->closeHeaderBefore('download_header');
 
 	// Download questions
-	$mform->addElement('header', 'download_header', get_string('download_header', 'qtype_quizmanager'));
+	$mform->addElement('header', 'download_header', get_string('download_header', 'qtype_topictagged'));
         $objs = array();
-	$objs[] = $mform->createElement('questioncategory', 'download_category', get_string('question_cat', 'qtype_quizmanager'), array('contexts' => $contexts));
+	$objs[] = $mform->createElement('questioncategory', 'download_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
 
         $objs = array();
-	$objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_quizmanager'));
+	$objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_topictagged'));
 	$objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
-        $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_quizmanager'));
+        $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_topictagged'));
 
-	$mform->addHelpButton('download_header', 'download', 'qtype_quizmanager');
-	$mform->addHelpButton('update_header', 'update_header', 'qtype_quizmanager');
+	$mform->addHelpButton('download_header', 'download', 'qtype_topictagged');
+	$mform->addHelpButton('update_header', 'update_header', 'qtype_topictagged');
     }
 }

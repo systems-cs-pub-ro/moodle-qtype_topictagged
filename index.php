@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Administration page for quizmanager question type
+ * Administration page for topictagged question type
  *
- * @package   qtype_quizmanager
+ * @package   qtype_topictagged
  * @copyright 2021 Andrei David; Ștefan Jumărea
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,14 +39,14 @@ $PAGE->set_context($coursecontext);
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('course');
 $PAGE->set_pagetype('activity-edit-list');
-$PAGE->set_title("Title"); //get_string('editactivities', 'qtype_quizmanager'));
-$PAGE->set_url('/question/type/quizmanager/index.php', ['id' => $courseid]);
+$PAGE->set_title("Title"); //get_string('editactivities', 'qtype_topictagged'));
+$PAGE->set_url('/question/type/topictagged/index.php', ['id' => $courseid]);
 */
 echo $OUTPUT->header();
 
-$utils = new \qtype_quizmanager\utils();
+$utils = new \qtype_topictagged\utils();
 
-$mform = new \qtype_quizmanager\output\simple_form($courseid);
+$mform = new \qtype_topictagged\output\simple_form($courseid);
 if ($formdata = $mform->get_data()) {
 	if (!empty($formdata->download_button)) {
             // Download CSV
@@ -59,7 +59,7 @@ if ($formdata = $mform->get_data()) {
 
 	    }
 	    else if ($formdata->download_mode == '1') { // CSV
-		    $download_url = new moodle_url('/question/type/quizmanager/download.php',
+		    $download_url = new moodle_url('/question/type/topictagged/download.php',
 			    array(
 				    'id' => $courseid,
 				    'category' => $categoryid,
@@ -67,7 +67,7 @@ if ($formdata = $mform->get_data()) {
 			    ));
 
 	    }
-	    $admin_url = new moodle_url('/question/type/quizmanager/index.php', array('id' => $courseid));
+	    $admin_url = new moodle_url('/question/type/topictagged/index.php', array('id' => $courseid));
 
 	    echo '
 		<script>
@@ -104,7 +104,7 @@ if ($formdata = $mform->get_data()) {
                 $record = [];
                 $record['questionid'] = $raw_record->itemid;
                 $record['lastused'] = intval(substr($raw_record->name, 10));
-                $utils->insert_or_update_record('question_quizmanager', $record, True);
+                $utils->insert_or_update_record('question_topictagged', $record, True);
             }
 
             // Display confirmation message and redirect to previous page
