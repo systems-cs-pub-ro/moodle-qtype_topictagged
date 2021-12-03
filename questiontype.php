@@ -109,6 +109,7 @@ class qtype_topictagged extends question_type {
             $difficultyoptions[2] = 'Medium';
             $difficultyoptions[3] = 'Medium-Hard';
             $difficultyoptions[4] = 'Hard';
+	    $difficultyoptions[5] = 'Any difficulty';
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
             $form->questiontext = array(
@@ -204,27 +205,76 @@ class qtype_topictagged extends question_type {
 
         // vertical join on questionid for questions having the topic, difficulty and category specified
         // left joined with the last_used  attribute
-        $query = '
-            SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
-            FROM (
-                SELECT tag_instance.itemid
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-                INTERSECT
-                SELECT tag_instance.itemid
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-                INTERSECT
-                SELECT question.id
-                FROM {tag_instance} tag_instance
-                    JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-            ) as questionids
-                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
-            ORDER BY topictagged.lastused;
-        ';
+	// the "Any difficulty" and "Any topics" cases are treated separately
+	if ($topic == "Any topic" && $difficulty == "Any difficulty") {
+
+		$query = '
+		    SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM {question} question
+			LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
+		    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
+		    ORDER BY topictagged.lastused;
+		';
+	} else if ($topic == "Any topic") {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	} else if ($difficulty == "Any difficulty") {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	} else {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	}
 
         $questionids = $DB->get_records_sql($query);
 
@@ -255,7 +305,7 @@ class qtype_topictagged extends question_type {
 			$query = '
 				SELECT question.id "questionid", 0 "lastused"
 				FROM {question} question
-				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
 				ORDER BY RAND();
 			';
 			$questionids = $DB->get_records_sql($query);

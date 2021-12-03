@@ -50,12 +50,14 @@ class qtype_topictagged_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
+	$difficultyoptions[5] = 'Any difficulty';
         $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
             $difficultyoptions);
 
 	// Get all tags used in the current context to use as selection list for the topic
         $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
         $tagstrings = [];
+	$tagstrings['Any topic'] = 'Any topic';
         foreach ($tags as $tag) {
             $tagstrings[$tag->name] = $tag->name;
         }
@@ -113,30 +115,67 @@ class qtype_topictagged_edit_form extends question_edit_form {
 		// for each difficulty
 		foreach($difficultyoptions as $difficulty) {
 			$topics = array();
+
 			// for each topic
 			foreach($tagstrings as $topic) {
 				// count available questions
 				$value = 0;
-				// Actual Query
-				$query = '
 
-					SELECT tag_instance.itemid
-					FROM {tag} tag
-					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
-					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-					INTERSECT
-					SELECT tag_instance.itemid
-					FROM {tag} tag                                                                 
-					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
-					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-					INTERSECT
-					SELECT question.id
-					FROM {tag_instance} tag_instance                                               
-					    JOIN {question} question ON question.id = tag_instance.itemid              
-					WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0          
-				 ';
+				// Actual Query
+				// Treat the "Any topic" and "Any difficulty" options separately
+				if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
+					$query = '
+
+						SELECT id from {question}
+						WHERE category = ' . $categories[$category] . ' AND hidden = 0 AND qtype != "topictagged"
+					';
+				} else if ($difficulty == 'Any difficulty') {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				} else if ($topic == 'Any topic') {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				} else {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+						INTERSECT
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				}
 				$questionids = $DB->get_records_sql($query);
-				$value = count($questionids);			
+				$value = count($questionids);
 				$topics[$topic] = $value;
 			}
 			$difficulties[$difficulty] = $topics;
@@ -195,25 +234,64 @@ class qtype_topictagged_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
+	$difficultyoptions[5] = 'Any difficulty';
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
-        $query = '
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-            INTERSECT
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-            INTERSECT
-            SELECT question.id
-            FROM {tag_instance} tag_instance
-                JOIN {question} question ON question.id = tag_instance.itemid
-            WHERE question.category = ' . $categoryid . '
-        ';
+
+	// Create the query
+	// Treat the "Any topic" and "Any difficulty" options separately
+	if ($topic == "Any topic" && $difficulty = "Any difficulty") {
+		$query = '
+
+			SELECT id from {question}
+			WHERE category = ' . $categoryid . ' AND hidden = 0 AND qtype != "topictagged"
+		';
+	} else if ($topic == "Any topic") {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		 ';
+	} else if ($difficulty == "Any difficulty") {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		 ';
+	} else {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+				JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . '
+			';
+	}
 
         $questionids = $DB->get_records_sql($query);
         // If no question with specified data is found, the question will not be saved
