@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * quizmanager question renderer class.
+ * topictagged question renderer class.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,13 +29,13 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Generates the output for quizmanager questions.
+ * Generates the output for topictagged questions.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager_renderer extends qtype_renderer {
+class qtype_topictagged_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
 

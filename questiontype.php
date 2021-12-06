@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question type class for the quizmanager question type.
+ * Question type class for the topictagged question type.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,19 +31,19 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/type/quizmanager/question.php');
+require_once($CFG->dirroot . '/question/type/topictagged/question.php');
 require_once($CFG->dirroot . '/question/type/questiontypebase.php');
 
 require_once('utils.php');
 
 /**
- * The quizmanager question type.
+ * The topictagged question type.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager extends question_type {
+class qtype_topictagged extends question_type {
 
     public function is_usable_by_random() {
         return false;
@@ -162,7 +162,7 @@ class qtype_quizmanager extends question_type {
         $a = new stdClass();
         $a->randomname = $randomname;
         $a->questionname = $question->name;
-	$question->name = get_string('selectedby', 'qtype_quizmanager', $a);
+	$question->name = get_string('selectedby', 'qtype_topictagged', $a);
     }
 
     /**
@@ -205,7 +205,7 @@ class qtype_quizmanager extends question_type {
         // vertical join on questionid for questions having the topic, difficulty and category specified
         // left joined with the last_used  attribute
         $query = '
-            SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
+            SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
             FROM (
                 SELECT tag_instance.itemid
                 FROM {tag} tag
@@ -222,8 +222,8 @@ class qtype_quizmanager extends question_type {
                     JOIN {question} question ON question.id = tag_instance.itemid
                 WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
             ) as questionids
-                LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
-            ORDER BY quizmanager.lastused;
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+            ORDER BY topictagged.lastused;
         ';
 
         $questionids = $DB->get_records_sql($query);
@@ -234,7 +234,7 @@ class qtype_quizmanager extends question_type {
 	 */
 	if (count($questionids) == 0) {
 		$query = '
-		    SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
 		    FROM (
 			SELECT tag_instance.itemid
 			FROM {tag} tag
@@ -246,8 +246,8 @@ class qtype_quizmanager extends question_type {
 			    JOIN {question} question ON question.id = tag_instance.itemid
 			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
 		    ) as questionids
-			LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
-		    ORDER BY quizmanager.lastused;
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
 		';
 		$questionids = $DB->get_records_sql($query);
 
@@ -313,10 +313,10 @@ class qtype_quizmanager extends question_type {
             $record['questionid'] = $question->id;
             $record['lastused'] = time();
 
-	    $utils = new \qtype_quizmanager\utils();
+	    $utils = new \qtype_topictagged\utils();
 
 	    if (!$isPreview) {
-	        $utils->insert_or_update_record('question_quizmanager', $record);
+	        $utils->insert_or_update_record('question_topictagged', $record);
 		// get all tags
 	        $question_tags = core_tag_tag::get_item_tags_array('core_question', 'question', $questionid->questionid);
 
@@ -352,7 +352,7 @@ class qtype_quizmanager extends question_type {
     }
 
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null) {
-        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_quizmanager') {
+        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_topictagged') {
             return false;
         }
         $question = parent::import_from_xml($data, $question, $format, null);
@@ -364,7 +364,7 @@ class qtype_quizmanager extends question_type {
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();
-        $gapfillinfo = $pluginmanager->get_plugin_info('question_quizmanager');
+        $gapfillinfo = $pluginmanager->get_plugin_info('question_topictagged');
         $output = parent::export_to_xml($question, $format);
         $output .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);
         return $output;

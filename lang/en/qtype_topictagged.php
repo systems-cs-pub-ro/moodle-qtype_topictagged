@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'qtype_quizmanager', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'qtype_topictagged', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Topic Tagged Question';
 $string['pluginname_help'] = 'Select an existing question based on topic and difficulty';
-$string['pluginname_link'] = 'question/type/quizmanager';
+$string['pluginname_link'] = 'question/type/topictagged';
 $string['pluginnameadding'] = 'Adding a topic tagged question';
-$string['pluginnameediting'] = 'Editing a quizmanager question';
+$string['pluginnameediting'] = 'Editing a topictagged question';
 $string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
@@ -58,9 +58,9 @@ $string['update_header'] = 'Update Database';
 
 $string['question_cat'] = 'Questions Category';
 
-$string['randomqname'] = 'Quiz Manager Question {$a}';
+$string['randomqname'] = 'Topic Tagged Question {$a}';
 
-$string['editsettings'] = 'Quiz Manager Administration';
+$string['editsettings'] = 'Topic Tagged QType Administration';
 
 $string['setdifficulty_help'] = 'Set the difficulty of the question from the given list.';
 $string['settags_help'] = 'Topics are user-defined tags that are added to the questions in question bank. Topics must preserve the form they were written when tagging the questions, otherwise there won\'t be any question selected.<br> Topics are case insensitive and you can only choose one topic for one question.';

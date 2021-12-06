@@ -15,41 +15,41 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mobile output class for qtype_quizmanager
+ * Mobile output class for qtype_topictagged
  *
- * @package    qtype_quizmanager
+ * @package    qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace qtype_quizmanager\output;
+namespace qtype_topictagged\output;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Mobile output class for quizmanager question type
+ * Mobile output class for topictagged question type
  *
- * @package    qtype_quizmanager
+ * @package    qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobile {
 
     /**
-     * Returns the quizmanager question type for the quiz the mobile app.
+     * Returns the topictagged question type for the quiz the mobile app.
      *
      * @return void
      */
-    public static function mobile_get_quizmanager() {
+    public static function mobile_get_topictagged() {
         global $CFG;
         return [
             'templates' => [
                 [
                     'id' => 'main',
-                    'html' => file_get_contents($CFG->dirroot .'/question/type/quizmanager/mobile/qtype-quizmanager.html')
+                    'html' => file_get_contents($CFG->dirroot .'/question/type/topictagged/mobile/qtype-topictagged.html')
                     ]
             ],
-            'javascript' => file_get_contents($CFG->dirroot . '/question/type/quizmanager/mobile/mobile.js')
+            'javascript' => file_get_contents($CFG->dirroot . '/question/type/topictagged/mobile/mobile.js')
 e?php
         ];
     }

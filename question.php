@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * quizmanager question definition class.
+ * topictagged question definition class.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,13 +36,13 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Represents a quizmanager question.
+ * Represents a topictagged question.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager_question extends question_graded_automatically_with_countback {
+class qtype_topictagged_question extends question_graded_automatically_with_countback {
     /* it may make more sense to think of this as get expected data types */
     public function get_expected_data() {
         return array();

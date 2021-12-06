@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the editing form for the quizmanager question type.
+ * Defines the editing form for the topictagged question type.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,13 +28,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * quizmanager question editing form definition.
+ * topictagged question editing form definition.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager_edit_form extends question_edit_form {
+class qtype_topictagged_edit_form extends question_edit_form {
     private $difficulty = "";
     private $topic = "";
 
@@ -50,7 +50,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
-        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
+        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
             $difficultyoptions);
 
 	// Get all tags used in the current context to use as selection list for the topic
@@ -82,15 +82,15 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 		}
 	}
 
-	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_quizmanager'), $tagstrings);
+	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_topictagged'), $tagstrings);
 	
-	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
-	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
+	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_topictagged');
+	$mform->addHelpButton('settags', 'settags', 'qtype_topictagged');
 
 	// Add text containing the total number of available questions
 	$mform->addElement('html', '
 		<div class="form-control">
-			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_quizmanager') . '</label>
+			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_topictagged') . '</label>
 			<b> <label id=id_availablequestions_count></label> </b>
 		</div>
 	');
@@ -148,7 +148,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 	// add JS script
 	$mform->addElement('html', '
 		<noscript id=id_json>' . json_encode($questions_number) . '</noscript>
-                <script src=type/quizmanager/display_count.js></script>
+                <script src=type/topictagged/display_count.js></script>
         ');
  
         //Hide default name, text, id and grade forms
@@ -230,6 +230,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
     }
 
     public function qtype() {
-        return 'quizmanager';
+        return 'topictagged';
     }
 }

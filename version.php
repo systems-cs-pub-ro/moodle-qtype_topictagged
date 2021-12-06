@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * quizmanager question type version information.
+ * topictagged question type version information.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'qtype_quizmanager';
+$plugin->component = 'qtype_topictagged';
 $plugin->version   = 2021092100;
 
 $plugin->requires  = 2012062504;

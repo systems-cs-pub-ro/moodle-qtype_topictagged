@@ -15,36 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * quizmanager question type  capability definition
+ * topictagged question type  capability definition
  *
- * @package    qtype_quizmanager
+ * @package    qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $addons = [
-    "qtype_quizmanager" => [
+    "qtype_topictagged" => [
         "handlers" => [ // Different places where the add-on will display content.
-            'quizmanager' => [ // Handler unique name (can be anything).
+            'topictagged' => [ // Handler unique name (can be anything).
                 'displaydata' => [
-                    'title' => 'quizmanager question',
-                    'icon' => '/question/type/quizmanager/pix/icon.gif',
+                    'title' => 'topictagged question',
+                    'icon' => '/question/type/topictagged/pix/icon.gif',
                     'class' => '',
                 ],
                 'delegate' => 'CoreQuestionDelegate', // Delegate (where to display the link to the add-on).
-                'method' => 'mobile_get_quizmanager',
+                'method' => 'mobile_get_topictagged',
                 'offlinefunctions' => [
-                    'mobile_get_quizmanager' => [],// function in classes/output/mobile.php
+                    'mobile_get_topictagged' => [],// function in classes/output/mobile.php
                 ], // Function needs caching for offline.
                 'styles' => [
-                    'url' => '/question/type/quizmanager/mobile/styles_app.css',
+                    'url' => '/question/type/topictagged/mobile/styles_app.css',
                     'version' => '1.00'
                 ]
             ]
         ],
         'lang' => [
-                    ['pluginname', 'qtype_quizmanager'], // matching value in  lang/en/qtype_quizmanager
+                    ['pluginname', 'qtype_topictagged'], // matching value in  lang/en/qtype_topictagged
         ],
     ]
 ];
