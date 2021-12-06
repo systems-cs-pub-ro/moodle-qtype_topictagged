@@ -69,7 +69,7 @@ Questions are added to a quiz using the Moodle interface, after the plugin was i
 * Press the `Save changes` button.
 * Repeat the instructions for all the questions you want in your quiz.
 
-**Note:** If you preview the added question, you will only see the first selected question from the question bank, and the `last_used` tag will not be updated.
+**Note:** If you preview the added question, you will see a random question from the question bank, having the selected difficulty and topic, and the `last_used` tag will not be updated.
 The students will each receive different questions having the selected difficulty and topic.
 
 # Managing Questions
