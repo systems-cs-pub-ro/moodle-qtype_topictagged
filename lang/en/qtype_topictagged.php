@@ -60,7 +60,7 @@ $string['question_cat'] = 'Questions Category';
 
 $string['randomqname'] = 'Topic Tagged Question {$a}';
 
-$string['editsettings'] = 'Topic Tagged Question Administration';
+$string['editsettings'] = 'Topic Tagged QType Administration';
 
 $string['setdifficulty_help'] = 'Set the difficulty of the question from the given list.';
 $string['settags_help'] = 'Topics are user-defined tags that are added to the questions in question bank. Topics must preserve the form they were written when tagging the questions, otherwise there won\'t be any question selected.<br> Topics are case insensitive and you can only choose one topic for one question.';

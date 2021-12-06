@@ -153,7 +153,7 @@ The question hash is used to uniquely identify the question such that the metada
 This requires further processing according to the chosen storage solution.
 The hashed string has the following format: `sha256(Question_textQuestion_answer1,Question_answer2...)`.
 
-To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Topic Tagged Questions Manager Administration` option.
+To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Topic Tagged QType Administration` option.
 Select the desired file format and the [category](https://docs.moodle.org/311/en/Question_categories), then press the `Download` button under the `Download questions` section.
 
 # References
