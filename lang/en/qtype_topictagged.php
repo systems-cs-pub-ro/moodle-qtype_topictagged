@@ -31,7 +31,7 @@ $string['pluginnameediting'] = 'Editing a topictagged question';
 $string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and' .
     'topic that has not been used in a while.<br>' .
     '<p><font color=#F57542><b>Warning:</b></font><br>' .
-    '<font color=#A14A28>Do not add this question into Question bank. Just add it to a quiz.</font></p><br>' .
+    '<font color=#A14A28>Do not add this question into the question bank. Just add it to a quiz.</font></p><br>' .
     '<p><font color=#4287F5><b>Note: </b></font>' .
     '<font color=#1C3C70>Keep in mind that preview shows randomly questions selected by the selected difficulty and topic.</font></p>' .
     '<p><font color=#4287F5><b>Note: </b></font>' .
@@ -77,5 +77,5 @@ $string['setdifficulty_help'] = 'Set the difficulty of the question from the giv
 $string['settags_help'] = 'Topics are user-defined tags that are added to the questions in question bank. Topics must preserve the form they were written when tagging the questions, otherwise there won\'t be any question selected.<br> Topics are case insensitive and you can only choose one topic for one question.';
 $string['update_header_help'] = 'Update the local database to include the `last_used` tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
 $string['download'] = 'Exporting Questions';
-$string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme> Documentation </a> for more information.</li></ol>';
+$string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>The CSV file will only contain questions used in a quiz.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme> Documentation </a> for more information.</li></ol>';
 $string['available_questoins'] = 'Available Questions Count:';
