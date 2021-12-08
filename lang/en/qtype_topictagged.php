@@ -35,6 +35,7 @@ $string['pluginnamesummary'] = 'Select a question from the question bank having 
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';
+$string['noquestions'] = 'No questions found having the selected difficulty and topic. No questions were added to the quiz';
 
 $string['randomqnamefromtop'] = 'Faulty random question! Please delete this question.';
 $string['randomqnamefromtoptags'] = 'Faulty random question! Please delete this question.';
