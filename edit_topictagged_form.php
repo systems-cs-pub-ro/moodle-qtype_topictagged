@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the editing form for the quizmanager question type.
+ * Defines the editing form for the topictagged question type.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,13 +28,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * quizmanager question editing form definition.
+ * topictagged question editing form definition.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager_edit_form extends question_edit_form {
+class qtype_topictagged_edit_form extends question_edit_form {
     private $difficulty = "";
     private $topic = "";
 
@@ -50,12 +50,14 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
-        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_quizmanager'),
+	$difficultyoptions[5] = 'Any difficulty';
+        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
             $difficultyoptions);
 
 	// Get all tags used in the current context to use as selection list for the topic
         $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
         $tagstrings = [];
+	$tagstrings['Any topic'] = 'Any topic';
         foreach ($tags as $tag) {
             $tagstrings[$tag->name] = $tag->name;
         }
@@ -82,15 +84,15 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 		}
 	}
 
-	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_quizmanager'), $tagstrings);
+	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_topictagged'), $tagstrings);
 	
-	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_quizmanager');
-	$mform->addHelpButton('settags', 'settags', 'qtype_quizmanager');
+	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_topictagged');
+	$mform->addHelpButton('settags', 'settags', 'qtype_topictagged');
 
 	// Add text containing the total number of available questions
 	$mform->addElement('html', '
 		<div class="form-control">
-			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_quizmanager') . '</label>
+			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_topictagged') . '</label>
 			<b> <label id=id_availablequestions_count></label> </b>
 		</div>
 	');
@@ -113,30 +115,67 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 		// for each difficulty
 		foreach($difficultyoptions as $difficulty) {
 			$topics = array();
+
 			// for each topic
 			foreach($tagstrings as $topic) {
 				// count available questions
 				$value = 0;
-				// Actual Query
-				$query = '
 
-					SELECT tag_instance.itemid
-					FROM {tag} tag
-					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
-					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-					INTERSECT
-					SELECT tag_instance.itemid
-					FROM {tag} tag                                                                 
-					    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid            
-					WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-					INTERSECT
-					SELECT question.id
-					FROM {tag_instance} tag_instance                                               
-					    JOIN {question} question ON question.id = tag_instance.itemid              
-					WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0          
-				 ';
+				// Actual Query
+				// Treat the "Any topic" and "Any difficulty" options separately
+				if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
+					$query = '
+
+						SELECT id from {question}
+						WHERE category = ' . $categories[$category] . ' AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
+					';
+				} else if ($difficulty == 'Any difficulty') {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				} else if ($topic == 'Any topic') {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				} else {
+					$query = '
+
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+						INTERSECT
+						SELECT tag_instance.itemid
+						FROM {tag} tag
+						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+						INTERSECT
+						SELECT question.id
+						FROM {tag_instance} tag_instance
+						    JOIN {question} question ON question.id = tag_instance.itemid
+						WHERE question.category = ' . $categories[$category] . ' AND question.hidden = 0
+					 ';
+				}
 				$questionids = $DB->get_records_sql($query);
-				$value = count($questionids);			
+				$value = count($questionids);
 				$topics[$topic] = $value;
 			}
 			$difficulties[$difficulty] = $topics;
@@ -148,7 +187,7 @@ class qtype_quizmanager_edit_form extends question_edit_form {
 	// add JS script
 	$mform->addElement('html', '
 		<noscript id=id_json>' . json_encode($questions_number) . '</noscript>
-                <script src=type/quizmanager/display_count.js></script>
+                <script src=type/topictagged/display_count.js></script>
         ');
  
         //Hide default name, text, id and grade forms
@@ -162,9 +201,20 @@ class qtype_quizmanager_edit_form extends question_edit_form {
                     document.getElementById("fitem_id_defaultmark").style.display = \'none\';
                     document.getElementById("fitem_id_generalfeedback").style.display = \'none\';
                     document.getElementById("fitem_id_idnumber").style.display = \'none\';
-                    document.getElementById("id_tagsdheader").style.display = \'none\';
                 </script>
         ');
+
+    }
+
+    public function add_action_buttons($cancel = true, $submitlabel = null) {
+	parent::add_action_buttons($cancel, $submitlabel);
+
+	$mform = $this->_form;
+	$mform->addElement('html', '
+		<script>
+			document.getElementById("id_updatebutton").style.display = \'none\';
+			document.getElementById("id_tagsheader").style.display = \'none\';
+		</script>');
     }
 
     protected function data_preprocessing($question) {
@@ -184,25 +234,64 @@ class qtype_quizmanager_edit_form extends question_edit_form {
         $difficultyoptions[2] = 'Medium';
         $difficultyoptions[3] = 'Medium-Hard';
         $difficultyoptions[4] = 'Hard';
+	$difficultyoptions[5] = 'Any difficulty';
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
-        $query = '
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-            INTERSECT
-            SELECT tag_instance.itemid
-            FROM {tag} tag
-                JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-            INTERSECT
-            SELECT question.id
-            FROM {tag_instance} tag_instance
-                JOIN {question} question ON question.id = tag_instance.itemid
-            WHERE question.category = ' . $categoryid . '
-        ';
+
+	// Create the query
+	// Treat the "Any topic" and "Any difficulty" options separately
+	if ($topic == "Any topic" && $difficulty = "Any difficulty") {
+		$query = '
+
+			SELECT id from {question}
+			WHERE category = ' . $categoryid . ' AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
+		';
+	} else if ($topic == "Any topic") {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		 ';
+	} else if ($difficulty == "Any difficulty") {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		 ';
+	} else {
+		$query = '
+
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+				JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . '
+			';
+	}
 
         $questionids = $DB->get_records_sql($query);
         // If no question with specified data is found, the question will not be saved
@@ -219,6 +308,6 @@ class qtype_quizmanager_edit_form extends question_edit_form {
     }
 
     public function qtype() {
-        return 'quizmanager';
+        return 'topictagged';
     }
 }

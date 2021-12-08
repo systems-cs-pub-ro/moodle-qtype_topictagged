@@ -34,7 +34,7 @@ Follow the steps below in your Moodle installation (administrative rights are re
 * Go to `Site administration > Plugins > Install plugins`.
 * Upload the zip file.
   If you are prompted to add extra details, under `Plugin type` select `Question type (qtype)`.
-* Go to `Show more > Rename the root directory` and type `quizmanager`.
+* Go to `Show more > Rename the root directory` and type `topictagged`.
 * If your target directory is not writable, you will see a warning message.
   Proceed to [Manual installation](/README.md#manual-installation-from-zip-file).
 * Press `Install plugin from the ZIP file` button.
@@ -45,14 +45,14 @@ If you are prompted with the message `Plugin type location /your/moodle/path/que
 
 * Download the [zip file](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master).
 * Unzip the file in the correct location: `/your/moodle/path/question/type`.
-* Rename the directory to `quizmanager`.
+* Rename the directory to `topictagged`.
 
 ### Manual Installation Using Git
 
 To install using Git, use this command:
 
 ```
-git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/quizmanager
+git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/topictagged
 ```
 
 # Adding Questions
@@ -69,7 +69,7 @@ Questions are added to a quiz using the Moodle interface, after the plugin was i
 * Press the `Save changes` button.
 * Repeat the instructions for all the questions you want in your quiz.
 
-**Note:** If you preview the added question, you will only see the first selected question from the question bank, and the `last_used` tag will not be updated.
+**Note:** If you preview the added question, you will see a random question from the question bank, having the selected difficulty and topic, and the `last_used` tag will not be updated.
 The students will each receive different questions having the selected difficulty and topic.
 
 # Managing Questions
@@ -141,7 +141,7 @@ Simply update it with the contents of the proposed question: statement, answers,
 After every question import, the local database that stores the `last_used` tag must be updated.
 Otherwise the `last_used` tag will be set to `0`, losing its meaning.
 
-To do that, in the main course page, navigate to the `Actions menu`(top right of the page, in the course header) and select `Quiz Manager Administration` option.
+To do that, in the main course page, navigate to the `Actions menu`(top right of the page, in the course header) and select `Topic Tagged Questions Administration` option.
 Under the `Update database` section, select the [category](https://docs.moodle.org/311/en/Question_categories) of the questions and press the `update` button.
 
 # Exporting Questions
@@ -153,7 +153,7 @@ The question hash is used to uniquely identify the question such that the metada
 This requires further processing according to the chosen storage solution.
 The hashed string has the following format: `sha256(Question_textQuestion_answer1,Question_answer2...)`.
 
-To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Quiz Manager Administration` option.
+To download the file, navigate to the `Actions menu`(top right of the page, in the course header) in the main course page and select the `Topic Tagged QType Administration` option.
 Select the desired file format and the [category](https://docs.moodle.org/311/en/Question_categories), then press the `Download` button under the `Download questions` section.
 
 # References

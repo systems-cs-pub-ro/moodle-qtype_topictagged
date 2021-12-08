@@ -17,13 +17,13 @@
 /**
  * Utils
  *
- * @package   qtype_quizmanager
+ * @package   qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace qtype_quizmanager;
+namespace qtype_topictagged;
 
 defined('MOODLE_INTERNAL') || die();
 

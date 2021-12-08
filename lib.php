@@ -18,7 +18,7 @@
  * Serve question type files
  *
  * @since      2.0
- * @package    qtype_quizmanager
+ * @package    qtype_topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,8 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Checks file access for quizmanager questions.
- * @package  qtype_quizmanager
+ * Checks file access for topictagged questions.
+ * @package  qtype_topictagged
  * @category files
  * @param stdClass $course course object
  * @param stdClass $cm course module object
@@ -41,16 +41,16 @@ defined('MOODLE_INTERNAL') || die();
  * @param array $options additional options affecting the file serving
  * @return bool
  */
-function qtype_quizmanager_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function qtype_topictagged_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $DB, $CFG;
     require_once($CFG->libdir . '/questionlib.php');
-    question_pluginfile($course, $context, 'qtype_quizmanager', $filearea, $args, $forcedownload, $options);
+    question_pluginfile($course, $context, 'qtype_topictagged', $filearea, $args, $forcedownload, $options);
 }
 
-function qtype_quizmanager_extend_navigation_course($navigation, $course, $context) {
+function qtype_topictagged_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('moodle/course:manageactivities', $context)) {
-        $url = new moodle_url('/question/type/quizmanager/index.php', array('id' => $course->id));
-        $settingsnode = navigation_node::create(get_string('editsettings', 'qtype_quizmanager'), $url, navigation_node::TYPE_SETTING,
+        $url = new moodle_url('/question/type/topictagged/index.php', array('id' => $course->id));
+        $settingsnode = navigation_node::create(get_string('editsettings', 'qtype_topictagged'), $url, navigation_node::TYPE_SETTING,
                 null, null, new pix_icon('t/edit', ''));
         $navigation->add_node($settingsnode);
     }

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question type class for the quizmanager question type.
+ * Question type class for the topictagged question type.
  *
  * @package    qtype
- * @subpackage quizmanager
+ * @subpackage topictagged
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,19 +31,19 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/type/quizmanager/question.php');
+require_once($CFG->dirroot . '/question/type/topictagged/question.php');
 require_once($CFG->dirroot . '/question/type/questiontypebase.php');
 
 require_once('utils.php');
 
 /**
- * The quizmanager question type.
+ * The topictagged question type.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_quizmanager extends question_type {
+class qtype_topictagged extends question_type {
 
     public function is_usable_by_random() {
         return false;
@@ -109,6 +109,7 @@ class qtype_quizmanager extends question_type {
             $difficultyoptions[2] = 'Medium';
             $difficultyoptions[3] = 'Medium-Hard';
             $difficultyoptions[4] = 'Hard';
+	    $difficultyoptions[5] = 'Any difficulty';
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
             $form->questiontext = array(
@@ -162,7 +163,7 @@ class qtype_quizmanager extends question_type {
         $a = new stdClass();
         $a->randomname = $randomname;
         $a->questionname = $question->name;
-	$question->name = get_string('selectedby', 'qtype_quizmanager', $a);
+	$question->name = get_string('selectedby', 'qtype_topictagged', $a);
     }
 
     /**
@@ -204,37 +205,20 @@ class qtype_quizmanager extends question_type {
 
         // vertical join on questionid for questions having the topic, difficulty and category specified
         // left joined with the last_used  attribute
-        $query = '
-            SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
-            FROM (
-                SELECT tag_instance.itemid
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-                INTERSECT
-                SELECT tag_instance.itemid
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-                INTERSECT
-                SELECT question.id
-                FROM {tag_instance} tag_instance
-                    JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-            ) as questionids
-                LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
-            ORDER BY quizmanager.lastused;
-        ';
+	// the "Any difficulty" and "Any topics" cases are treated separately
+	if ($topic == "Any topic" && $difficulty == "Any difficulty") {
 
-        $questionids = $DB->get_records_sql($query);
-
-	/** If there are no questions found with the coresponding topic and difficulty,
-	 * select a question only with the given difficulty.
-	 * If there are still no questions found, select a random question from the category.
-	 */
-	if (count($questionids) == 0) {
 		$query = '
-		    SELECT questionids.itemid "questionid", NVL(quizmanager.lastused, 0) "lastused"
+		    SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM {question} question
+			LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
+		    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged" AND qtype != "random"
+		    ORDER BY topictagged.lastused;
+		';
+	} else if ($topic == "Any topic") {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
 		    FROM (
 			SELECT tag_instance.itemid
 			FROM {tag} tag
@@ -246,8 +230,74 @@ class qtype_quizmanager extends question_type {
 			    JOIN {question} question ON question.id = tag_instance.itemid
 			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
 		    ) as questionids
-			LEFT JOIN {question_quizmanager} quizmanager ON questionids.itemid = quizmanager.questionid
-		    ORDER BY quizmanager.lastused;
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	} else if ($difficulty == "Any difficulty") {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	} else {
+
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
+		';
+	}
+
+        $questionids = $DB->get_records_sql($query);
+
+	/** If there are no questions found with the coresponding topic and difficulty,
+	 * select a question only with the given difficulty.
+	 * If there are still no questions found, select a random question from the category.
+	 */
+	if (count($questionids) == 0) {
+		$query = '
+		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+		    FROM (
+			SELECT tag_instance.itemid
+			FROM {tag} tag
+			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+			INTERSECT
+			SELECT question.id
+			FROM {tag_instance} tag_instance
+			    JOIN {question} question ON question.id = tag_instance.itemid
+			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+		    ) as questionids
+			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+		    ORDER BY topictagged.lastused;
 		';
 		$questionids = $DB->get_records_sql($query);
 
@@ -255,7 +305,7 @@ class qtype_quizmanager extends question_type {
 			$query = '
 				SELECT question.id "questionid", 0 "lastused"
 				FROM {question} question
-				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
 				ORDER BY RAND();
 			';
 			$questionids = $DB->get_records_sql($query);
@@ -300,6 +350,16 @@ class qtype_quizmanager extends question_type {
             }
         }
 
+	if ($isPreview == true) {
+		shuffle($available);
+		$questionid = $available[0];
+
+		$question = question_bank::load_question($questionid->questionid, $allowshuffle);
+		$this->set_selected_question_name($question, $questiondata->name);
+
+		return $question;
+	}
+
         foreach ($available as $questionid) {
             if (in_array($questionid, $excludedquestions)) {
                 continue;
@@ -313,10 +373,10 @@ class qtype_quizmanager extends question_type {
             $record['questionid'] = $question->id;
             $record['lastused'] = time();
 
-	    $utils = new \qtype_quizmanager\utils();
+	    $utils = new \qtype_topictagged\utils();
 
 	    if (!$isPreview) {
-	        $utils->insert_or_update_record('question_quizmanager', $record);
+	        $utils->insert_or_update_record('question_topictagged', $record);
 		// get all tags
 	        $question_tags = core_tag_tag::get_item_tags_array('core_question', 'question', $questionid->questionid);
 
@@ -352,7 +412,7 @@ class qtype_quizmanager extends question_type {
     }
 
     public function import_from_xml($data, $question, qformat_xml $format, $extra = null) {
-        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_quizmanager') {
+        if (!isset($data['@']['type']) || $data['@']['type'] != 'question_topictagged') {
             return false;
         }
         $question = parent::import_from_xml($data, $question, $format, null);
@@ -364,7 +424,7 @@ class qtype_quizmanager extends question_type {
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();
-        $gapfillinfo = $pluginmanager->get_plugin_info('question_quizmanager');
+        $gapfillinfo = $pluginmanager->get_plugin_info('question_topictagged');
         $output = parent::export_to_xml($question, $format);
         $output .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);
         return $output;
