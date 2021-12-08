@@ -72,6 +72,7 @@ class simple_form extends \moodleform {
         $objs = array();
         $objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_topictagged'));
         $objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
+        $objs[] = $mform->createElement('static', 'fileformatwarning_label', 'fileformat_warning', get_string('fileformat_warning', 'qtype_topictagged'));
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
         $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_topictagged'));
 

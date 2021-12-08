@@ -36,6 +36,8 @@ $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';
 $string['noquestions'] = 'No questions found having the selected difficulty and topic. No questions were added to the quiz';
+$string['fileformat_warning'] = '<font color=#F57542><b>Warning: </b></font>'.
+    '<font color=#A14A28><b>MXML</b> file can be re-imported; <b>CSV</b> file can <u>not</u> be re-imported.</font>';
 
 $string['randomqnamefromtop'] = 'Faulty random question! Please delete this question.';
 $string['randomqnamefromtoptags'] = 'Faulty random question! Please delete this question.';
