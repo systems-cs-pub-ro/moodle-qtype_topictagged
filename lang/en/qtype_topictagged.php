@@ -28,7 +28,10 @@ $string['pluginname_help'] = 'Select an existing question based on topic and dif
 $string['pluginname_link'] = 'question/type/topictagged';
 $string['pluginnameadding'] = 'Adding a topic tagged question';
 $string['pluginnameediting'] = 'Editing a topictagged question';
-$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
+$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and' .
+    'topic that has not been used in a while.<br>' .
+    '<p><font color=#F57542><b>Warning:</b></font><br>' .
+    '<font color=#A14A28>Do not add this question into Question bank. Just add it to a quiz.</font></p>';
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';
