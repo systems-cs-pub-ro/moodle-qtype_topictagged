@@ -28,10 +28,21 @@ $string['pluginname_help'] = 'Select an existing question based on topic and dif
 $string['pluginname_link'] = 'question/type/topictagged';
 $string['pluginnameadding'] = 'Adding a topic tagged question';
 $string['pluginnameediting'] = 'Editing a topictagged question';
-$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and topic that has not been used in a while';
+$string['pluginnamesummary'] = 'Select a question from the question bank having the selected difficulty and' .
+    'topic that has not been used in a while.<br>' .
+    '<p><font color=#F57542><b>Warning:</b></font><br>' .
+    '<font color=#A14A28>Do not add this question into the question bank. Just add it to a quiz.</font></p><br>' .
+    '<p><font color=#4287F5><b>Note: </b></font>' .
+    '<font color=#1C3C70>Keep in mind that preview shows random questions selected by the given difficulty and topic, without affecting the selection process.</font></p>' .
+    '<p><font color=#4287F5><b>Note: </b></font>' .
+    '<font color=#1C3C70>If during the test there are no available questions, a random question will be selected.</font></p>' .
+    '<p>For further reference, please check <a href="https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme">Documentation</a></p>';
 $string['setdifficulty'] = 'Set difficulty';
 $string['settags'] = 'Set topic';
 $string['settagsempty'] = 'No topic selected';
+$string['noquestions'] = 'No questions found having the selected difficulty and topic. No questions were added to the quiz';
+$string['fileformat_warning'] = '<font color=#F57542><b>Warning: </b></font>'.
+    '<font color=#A14A28><b>MXML</b> file can be re-imported; <b>CSV</b> file can <u>not</u> be re-imported.</font>';
 
 $string['randomqnamefromtop'] = 'Faulty random question! Please delete this question.';
 $string['randomqnamefromtoptags'] = 'Faulty random question! Please delete this question.';
@@ -66,5 +77,5 @@ $string['setdifficulty_help'] = 'Set the difficulty of the question from the giv
 $string['settags_help'] = 'Topics are user-defined tags that are added to the questions in question bank. Topics must preserve the form they were written when tagging the questions, otherwise there won\'t be any question selected.<br> Topics are case insensitive and you can only choose one topic for one question.';
 $string['update_header_help'] = 'Update the local database to include the `last_used` tag of the questions from the selected category. The update MUST be done every time after importing a new set of questions.';
 $string['download'] = 'Exporting Questions';
-$string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle/tree/master#exporting-questions> Exporting Questions </a> for more information.</li></ol>';
+$string['download_help'] = 'For exporting, choose the category you want to download the questions from and then choose the file format.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recommended)</i></b> can be easily re-imported.</li><li><i>CSV (Complex)</i> easier to manipulate data as long as you have a local copy.<br>The CSV file will only contain questions used in a quiz.<br>See <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme> Documentation </a> for more information.</li></ol>';
 $string['available_questoins'] = 'Available Questions Count:';

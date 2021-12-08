@@ -298,7 +298,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
         if (!$questionids) {
             echo '
                 <script>
-                    alert("No questions found having the selected difficulty and topic");
+                    alert("' . get_string('noquestions', 'qtype_topictagged') . '");
                     window.location.href = "' . $fromform["returnurl"] . '";
                 </script>
             ';
