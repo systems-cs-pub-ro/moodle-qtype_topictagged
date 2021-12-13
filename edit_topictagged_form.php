@@ -101,7 +101,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 	foreach ($mform->_elements[1]->_optGroups as $category) {
 		foreach ($category['options'] as $option) {
 			$value = $option["attr"]["value"];
-			$categoryid = strtok($value, ',');
+			$categoryid = explode(',', $value)[0];
 			array_push($categories, $categoryid);
 		}
 	}
@@ -237,7 +237,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 	$difficultyoptions[5] = 'Any difficulty';
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
-        $categoryid = strtok($fromform["category"], ',');
+	$categoryid = explode(',', $fromform["category"])[0];
 
 	// Create the query
 	// Treat the "Any topic" and "Any difficulty" options separately
