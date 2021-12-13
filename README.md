@@ -74,10 +74,10 @@ The students will each receive different questions having the selected difficult
 
 # Managing Questions
 
-The plugin can use any [question type](https://docs.moodle.org/311/en/Question_types) in the question bank, as long as the question has the corresponding difficulty and topic tag.
+The plugin will use any question in the question bank, as long as the question has the corresponding difficulty and topic tag.
 
 If questions are imported from an external source, using any [format](https://docs.moodle.org/311/en/Import_questions#Question_import_formats) supported by Moodle, the following rules must be followed:
-* The difficulty tag must be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
+* The difficulty tag **MUST** be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
 * The `last_used` tag is optional (if not present, it will be considered `0`).
   The format is: `last_used:time`, where time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
 * The topic tags **MUST NOT** include the character `-`, as it is internally used by the plugin as a delimiter between tags.
