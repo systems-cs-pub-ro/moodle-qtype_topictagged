@@ -1,4 +1,4 @@
-function eventHandler () {
+function updateAvailableQuestionCount () {
 	// extract selected topic, difficulty, category
 	var cat_id = document.getElementById("id_category").selectedIndex;
 	var dif_id = document.getElementById("id_setdifficulty").options[document.getElementById("id_setdifficulty").selectedIndex].text;
@@ -12,24 +12,22 @@ function eventHandler () {
 
 	// display counter
 	var availableQ = json[cat_id][dif_id][top_id];
-	console.log(cat_id, dif_id, top_id);
-	console.log(availableQ);
 	document.getElementById("id_availablequestions_count").innerHTML = availableQ;
 }
 
 // initial update
-eventHandler();
+updateAvailableQuestionCount();
 
 // on `select` change update
 document.getElementById("id_category").addEventListener("change", event => {
-	eventHandler();
+	updateAvailableQuestionCount();
 });
 
 document.getElementById("id_setdifficulty").addEventListener("change", event => {
-	eventHandler();
+	updateAvailableQuestionCount();
 });
 
 document.getElementById("id_settags").addEventListener("change", event => {
-	eventHandler();
+	updateAvailableQuestionCount();
 });
 
