@@ -43,16 +43,10 @@ class qtype_topictagged_edit_form extends question_edit_form {
         //remove any that come with the parent class you don't want
 	global $DB, $CFG;
 
-        //Add difficulty field
-        $difficultyoptions = [];
-        $difficultyoptions[0] = 'Easy';
-        $difficultyoptions[1] = 'Easy-Medium';
-        $difficultyoptions[2] = 'Medium';
-        $difficultyoptions[3] = 'Medium-Hard';
-        $difficultyoptions[4] = 'Hard';
-	$difficultyoptions[5] = 'Any difficulty';
-        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
-            $difficultyoptions);
+    //Add difficulty field
+    $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
+    $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
+        $difficultyoptions);
 
 	// Get all tags used in the current context to use as selection list for the topic
         $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
@@ -227,13 +221,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
         // Check if a question exists having the selected difficulty, topic and category
         global $DB;
         $mform = $this->_form;
-        $difficultyoptions = [];
-        $difficultyoptions[0] = 'Easy';
-        $difficultyoptions[1] = 'Easy-Medium';
-        $difficultyoptions[2] = 'Medium';
-        $difficultyoptions[3] = 'Medium-Hard';
-        $difficultyoptions[4] = 'Hard';
-	$difficultyoptions[5] = 'Any difficulty';
+        $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
