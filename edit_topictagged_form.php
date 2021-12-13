@@ -75,7 +75,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 
 	// Remove all difficulty and last_used tags from the list
 	foreach ($tagstrings as $standardtag) {
-		if (strpos($standardtag, "last_used") !== false)
+		if (strpos($standardtag, "last_used") !== false || strpos($standardtag, "###__###") !== false)
 			unset($tagstrings[$standardtag]);
 
 		foreach ($difficultyoptions as $diffoption) {
