@@ -41,10 +41,10 @@ Follow the steps below in your Moodle installation (administrative rights are re
 
 ### Manual Installation From zip file
 
-If you are prompted with the message `Plugin type location /your/moodle/path/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
+If you are prompted with the message `Plugin type location ${MOODLE_DIR}/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
 
 * Download the [zip file](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master).
-* Unzip the file in the correct location: `/your/moodle/path/question/type`.
+* Unzip the file in the correct location: `${MOODLE_DIR}/question/type`.
 * Rename the directory to `topictagged`.
 
 ### Manual Installation Using Git
@@ -52,7 +52,7 @@ If you are prompted with the message `Plugin type location /your/moodle/path/que
 To install using Git, use this command:
 
 ```
-git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/topictagged
+git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git ${MOODLE_DIR}/question/type/topictagged
 ```
 
 # Adding Questions
