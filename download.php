@@ -36,18 +36,11 @@ require_login($course);
 
 // Get all questions form database with their answers and last_used tag
 global $DB;
-$query = '
-    SELECT question.id "id", question.questiontext "question_text", GROUP_CONCAT(answers.answer) "answers", topictagged.lastused "last_used"
-    FROM {question} question
-        JOIN {question_answers} answers
-            ON answers.question = question.id
-        JOIN {question_topictagged} topictagged
-            ON question.id = topictagged.questionid
-    WHERE question.category = ' . $categoryid . '
-    GROUP BY question.id;
-';
+global $sql_question_answer_lastused;
+require('consts.php');
+$query = $sql_question_answer_lastused;
 
-$entries = $DB->get_records_sql($query);
+$entries = $DB->get_records_sql($query, ['categoryid' => strval($categoryid)]);
 
 /**
  * Iterate trough questions and create csv string
