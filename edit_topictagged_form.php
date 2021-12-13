@@ -131,8 +131,8 @@ class qtype_topictagged_edit_form extends question_edit_form {
 				} else {
 					$query = $sql_questionids;
 				}
-				$questionids = $DB->get_records_sql($query, ['topic' => strval($topic), 'difficulty' => strval($difficulty), 'categoryid' => strval($categories[$category])]);
-				$value = count($questionids);
+                $value = $DB->count_records_sql($query,
+                    ['topic' => strval($topic), 'difficulty' => strval($difficulty), 'categoryid' => strval($categories[$category])]);
 				$topics[$topic] = $value;
 			}
 			$difficulties[$difficulty] = $topics;
