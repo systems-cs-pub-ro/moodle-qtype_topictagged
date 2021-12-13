@@ -114,58 +114,22 @@ class qtype_topictagged_edit_form extends question_edit_form {
 				// count available questions
 				$value = 0;
 
+                global $sql_questionids_anytopic_anydifficulty;
+                global $sql_questionids_anydifficulty;
+                global $sql_questionids_anytopic;
+                global $sql_questionids;
+
+                require('consts.php');
 				// Actual Query
 				// Treat the "Any topic" and "Any difficulty" options separately
 				if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
-					$query = '
-
-						SELECT id from {question}
-						WHERE category = :categoryid AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
-					';
+					$query = $sql_questionids_anytopic_anydifficulty;
 				} else if ($difficulty == 'Any difficulty') {
-					$query = '
-
-						SELECT tag_instance.itemid
-						FROM {tag} tag
-						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-						INTERSECT
-						SELECT question.id
-						FROM {tag_instance} tag_instance
-						    JOIN {question} question ON question.id = tag_instance.itemid
-						WHERE question.category = :categoryid AND question.hidden = 0
-					 ';
+					$query = $sql_questionids_anydifficulty;
 				} else if ($topic == 'Any topic') {
-					$query = '
-
-						SELECT tag_instance.itemid
-						FROM {tag} tag
-						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-						INTERSECT
-						SELECT question.id
-						FROM {tag_instance} tag_instance
-						    JOIN {question} question ON question.id = tag_instance.itemid
-						WHERE question.category = :categoryid AND question.hidden = 0
-					 ';
+					$query = $sql_questionids_anytopic;
 				} else {
-					$query = '
-
-						SELECT tag_instance.itemid
-						FROM {tag} tag
-						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-						INTERSECT
-						SELECT tag_instance.itemid
-						FROM {tag} tag
-						    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-						WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-						INTERSECT
-						SELECT question.id
-						FROM {tag_instance} tag_instance
-						    JOIN {question} question ON question.id = tag_instance.itemid
-						WHERE question.category = :categoryid AND question.hidden = 0
-					 ';
+					$query = $sql_questionids;
 				}
 				$questionids = $DB->get_records_sql($query, ['topic' => strval($topic), 'difficulty' => strval($difficulty), 'categoryid' => strval($categories[$category])]);
 				$value = count($questionids);
@@ -226,58 +190,22 @@ class qtype_topictagged_edit_form extends question_edit_form {
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
 
+    global $sql_questionids_anytopic_anydifficulty;
+    global $sql_questionids_anydifficulty;
+    global $sql_questionids_anytopic;
+    global $sql_questionids;
+
+    require('consts.php');
 	// Create the query
 	// Treat the "Any topic" and "Any difficulty" options separately
 	if ($topic == "Any topic" && $difficulty = "Any difficulty") {
-		$query = '
-
-			SELECT id from {question}
-			WHERE category = ' . $categoryid . ' AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
-		';
+		$query = $sql_questionids_anytopic_anydifficulty;
 	} else if ($topic == "Any topic") {
-		$query = '
-
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = :categoryid AND question.hidden = 0
-		 ';
+		$query = $sql_questionids_anytopic;
 	} else if ($difficulty == "Any difficulty") {
-		$query = '
-
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = :categoryid AND question.hidden = 0
-		 ';
+		$query = $sql_questionids_anydifficulty;
 	} else {
-		$query = '
-
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-			INTERSECT
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-				JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-				JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = :categoryid
-			';
+		$query = $sql_questionids;
 	}
 
         $questionids = $DB->get_records_sql($query,
