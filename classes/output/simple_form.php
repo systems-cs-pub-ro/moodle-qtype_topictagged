@@ -46,36 +46,37 @@ class simple_form extends \moodleform {
      * @param int $courseid Course ID
      */
     public function __construct(int $courseid) {
-	$return_url = '/question/type/topictagged/index.php?id=' . $courseid;
+        $return_url = '/question/type/topictagged/index.php?id=' . $courseid;
         $this->courseid = $courseid;
-	parent::__construct($return_url);
+        parent::__construct($return_url);
     }
 
     public function definition() {
-	$mform = $this->_form;
-	$contexts = [\context_course::instance($this->courseid)];
+        $mform = $this->_form;
+        $contexts = [\context_course::instance($this->courseid)];
 
-	// Update database entries
-	$mform->addElement('header', 'update_header', get_string('update_header', 'qtype_topictagged'));
+        // Update database entries
+        $mform->addElement('header', 'update_header', get_string('update_header', 'qtype_topictagged'));
         $objs = array();
-	$objs[] = $mform->createElement('questioncategory', 'update_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
+        $objs[] = $mform->createElement('questioncategory', 'update_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
         $mform->addElement('submit', 'update_button', get_string('update_button', 'qtype_topictagged'));
-	$mform->closeHeaderBefore('download_header');
+        $mform->closeHeaderBefore('download_header');
 
-	// Download questions
-	$mform->addElement('header', 'download_header', get_string('download_header', 'qtype_topictagged'));
+        // Download questions
+        $mform->addElement('header', 'download_header', get_string('download_header', 'qtype_topictagged'));
         $objs = array();
-	$objs[] = $mform->createElement('questioncategory', 'download_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
+        $objs[] = $mform->createElement('questioncategory', 'download_category', get_string('question_cat', 'qtype_topictagged'), array('contexts' => $contexts));
         $group = $mform->addElement('group', 'category_group', '', $objs, array('&nbsp;'), false);
 
         $objs = array();
-	$objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_topictagged'));
-	$objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
+        $objs[] = $mform->createElement('static', 'fileformat_label', 'file_format', get_string('download_mode', 'qtype_topictagged'));
+        $objs[] = $mform->createElement('select', 'download_mode', null, ['MXML', 'CSV']); 
+        $objs[] = $mform->createElement('static', 'fileformatwarning_label', 'fileformat_warning', get_string('fileformat_warning', 'qtype_topictagged'));
         $group = $mform->addElement('group', 'fileformat_group', '', $objs, array('&nbsp;'), false);
         $mform->addElement('submit', 'download_button', get_string('download_button', 'qtype_topictagged'));
 
-	$mform->addHelpButton('download_header', 'download', 'qtype_topictagged');
-	$mform->addHelpButton('update_header', 'update_header', 'qtype_topictagged');
+        $mform->addHelpButton('download_header', 'download', 'qtype_topictagged');
+        $mform->addHelpButton('update_header', 'update_header', 'qtype_topictagged');
     }
 }

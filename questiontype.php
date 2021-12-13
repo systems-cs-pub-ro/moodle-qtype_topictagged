@@ -350,6 +350,16 @@ class qtype_topictagged extends question_type {
             }
         }
 
+	if ($isPreview == true) {
+		shuffle($available);
+		$questionid = $available[0];
+
+		$question = question_bank::load_question($questionid->questionid, $allowshuffle);
+		$this->set_selected_question_name($question, $questiondata->name);
+
+		return $question;
+	}
+
         foreach ($available as $questionid) {
             if (in_array($questionid, $excludedquestions)) {
                 continue;
