@@ -35,11 +35,7 @@ class utils {
 	public function insert_or_update_record($table, $record, $insert_only = False) {
 		global $DB;
 
-		$old_record = $DB->get_record_sql('
-		    SELECT id
-		    FROM {' . $table . '}
-		    WHERE questionid = ' . $record['questionid'] . ';
-		');
+        $old_record = $DB->get_record($table, ['questionid' => $record['questionid']]);
 
 		if ($old_record) {
 		    if (!$insert_only) {
