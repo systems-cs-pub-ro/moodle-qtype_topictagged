@@ -35,11 +35,7 @@ class utils {
 	public function insert_or_update_record($table, $record, $insert_only = False) {
 		global $DB;
 
-		$old_record = $DB->get_record_sql('
-		    SELECT id
-		    FROM {' . $table . '}
-		    WHERE questionid = ' . $record['questionid'] . ';
-		');
+        $old_record = $DB->get_record($table, ['questionid' => $record['questionid']]);
 
 		if ($old_record) {
 		    if (!$insert_only) {
@@ -70,4 +66,80 @@ class utils {
 	}
 }
 
+class database_utils {
+    /**
+     * Get all questions having the selected topic and difficulty
+     */
+    public function get_questions($topic, $difficulty, $categoryid) {
+        global $DB;
+
+        // SQL Queries
+        $sql_questionids_anytopic_anydifficulty = '
+                SELECT id from {question}
+                WHERE category = :categoryid AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
+            ';
+
+        $sql_questionids_anydifficulty = '
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = :categoryid AND question.hidden = 0
+             ';
+
+        $sql_questionids_anytopic = '
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = :categoryid AND question.hidden = 0
+             ';
+
+        $sql_questionids = '
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
+                INTERSECT
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = :categoryid AND question.hidden = 0
+             ';
+       // Actual Query
+        // Treat the "Any topic" and "Any difficulty" options separately
+        if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
+            $query = $sql_questionids_anytopic_anydifficulty;
+        } else if ($difficulty == 'Any difficulty') {
+            $query = $sql_questionids_anydifficulty;
+        } else if ($topic == 'Any topic') {
+            $query = $sql_questionids_anytopic;
+        } else {
+            $query = $sql_questionids;
+        }
+
+        $questionids = $DB->get_records_sql($query,
+            ['topic' => $topic, 'difficulty' => $difficulty, 'categoryid' => $categoryid]);
+
+        return $questionids;
+    }
+
+    public function count_questions($topic, $difficulty, $categoryid) {
+        return count($this->get_questions($topic, $difficulty, $categoryid));
+    }
+}
+?>
 

@@ -41,10 +41,10 @@ Follow the steps below in your Moodle installation (administrative rights are re
 
 ### Manual Installation From zip file
 
-If you are prompted with the message `Plugin type location /your/moodle/path/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
+If you are prompted with the message `Plugin type location ${MOODLE_DIR}/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
 
 * Download the [zip file](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master).
-* Unzip the file in the correct location: `/your/moodle/path/question/type`.
+* Unzip the file in the correct location: `${MOODLE_DIR}/question/type`.
 * Rename the directory to `topictagged`.
 
 ### Manual Installation Using Git
@@ -52,7 +52,7 @@ If you are prompted with the message `Plugin type location /your/moodle/path/que
 To install using Git, use this command:
 
 ```
-git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git /your/moodle/path/question/type/topictagged
+git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git ${MOODLE_DIR}/question/type/topictagged
 ```
 
 # Adding Questions
@@ -74,10 +74,10 @@ The students will each receive different questions having the selected difficult
 
 # Managing Questions
 
-The plugin can use any [question type](https://docs.moodle.org/311/en/Question_types) in the question bank, as long as the question has the corresponding difficulty and topic tag.
+The plugin will use any question in the question bank, as long as the question has the corresponding difficulty and topic tag.
 
 If questions are imported from an external source, using any [format](https://docs.moodle.org/311/en/Import_questions#Question_import_formats) supported by Moodle, the following rules must be followed:
-* The difficulty tag must be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
+* The difficulty tag **MUST** be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
 * The `last_used` tag is optional (if not present, it will be considered `0`).
   The format is: `last_used:time`, where time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
 * The topic tags **MUST NOT** include the character `-`, as it is internally used by the plugin as a delimiter between tags.
