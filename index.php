@@ -27,6 +27,7 @@ require('../../../config.php');
 
 require_once($CFG->libdir . '/questionlib.php');
 require_once('utils.php');
+require_once('./classes/output/question_administration_form.php');
 
 $courseid = required_param('id', PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid]);
@@ -46,7 +47,7 @@ echo $OUTPUT->header();
 
 $utils = new \qtype_topictagged\utils();
 
-$mform = new \qtype_topictagged\output\simple_form($courseid);
+$mform = new \qtype_topictagged\output\question_administration_form($courseid);
 if ($formdata = $mform->get_data()) {
 	if (!empty($formdata->download_button)) {
             // Download CSV
