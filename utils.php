@@ -66,4 +66,40 @@ class utils {
 	}
 }
 
+class database_utils {
+    /**
+     * Get all questions having the selected topic and difficulty
+     */
+    public function get_questions($topic, $difficulty, $categoryid) {
+        global $DB;
+
+        global $sql_questionids_anytopic_anydifficulty;
+        global $sql_questionids_anydifficulty;
+        global $sql_questionids_anytopic;
+        global $sql_questionids;
+
+        require_once('consts.php');
+
+        // Actual Query
+        // Treat the "Any topic" and "Any difficulty" options separately
+        if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
+            $query = $sql_questionids_anytopic_anydifficulty;
+        } else if ($difficulty == 'Any difficulty') {
+            $query = $sql_questionids_anydifficulty;
+        } else if ($topic == 'Any topic') {
+            $query = $sql_questionids_anytopic;
+        } else {
+            $query = $sql_questionids;
+        }
+        $questionids = $DB->get_records_sql($query,
+            ['topic' => $topic, 'difficulty' => $difficulty, 'categoryid' => $categoryid]);
+
+        return $questionids;
+    }
+
+    public function count_questions($topic, $difficulty, $categoryid) {
+        return count($this->get_questions($topic, $difficulty, $categoryid));
+    }
+}
+?>
 

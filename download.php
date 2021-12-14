@@ -24,7 +24,7 @@
  */
 
 require('../../../config.php');
-require('utils.php');
+require_once('utils.php');
 
 $courseid = required_param('id', PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid]);

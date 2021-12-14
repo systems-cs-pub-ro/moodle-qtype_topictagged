@@ -26,6 +26,7 @@
 
 
 defined('MOODLE_INTERNAL') || die();
+require_once('utils.php');
 
 /**
  * topictagged question editing form definition.
@@ -42,6 +43,8 @@ class qtype_topictagged_edit_form extends question_edit_form {
         //Add fields specific to this question type
         //remove any that come with the parent class you don't want
 	global $DB, $CFG;
+
+    $db_utils = new \qtype_topictagged\database_utils();
 
     //Add difficulty field
     $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
@@ -112,30 +115,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 			// for each topic
 			foreach($tagstrings as $topic) {
 				// count available questions
-				$value = 0;
-
-                global $sql_questionids_anytopic_anydifficulty;
-                global $sql_questionids_anydifficulty;
-                global $sql_questionids_anytopic;
-                global $sql_questionids;
-
-                require('consts.php');
-				// Actual Query
-				// Treat the "Any topic" and "Any difficulty" options separately
-				if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
-					$query = $sql_questionids_anytopic_anydifficulty;
-				} else if ($difficulty == 'Any difficulty') {
-					$query = $sql_questionids_anydifficulty;
-				} else if ($topic == 'Any topic') {
-					$query = $sql_questionids_anytopic;
-				} else {
-					$query = $sql_questionids;
-				}
-                // reuse query for getting question
-                $questionids = $DB->get_records_sql($query,
-                    ['topic' => strval($topic), 'difficulty' => strval($difficulty), 'categoryid' => strval($categories[$category])]);
-                // count values
-                $value = count($questionids);
+                $value = $db_utils->count_questions($topic, $difficulty, $categories[$category]);
 				$topics[$topic] = $value;
 			}
 			$difficulties[$difficulty] = $topics;
@@ -193,26 +173,10 @@ class qtype_topictagged_edit_form extends question_edit_form {
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
 
-    global $sql_questionids_anytopic_anydifficulty;
-    global $sql_questionids_anydifficulty;
-    global $sql_questionids_anytopic;
-    global $sql_questionids;
-
-    require('consts.php');
+    $db_utils = new \qtype_topictagged\database_utils();
 	// Create the query
 	// Treat the "Any topic" and "Any difficulty" options separately
-	if ($topic == "Any topic" && $difficulty = "Any difficulty") {
-		$query = $sql_questionids_anytopic_anydifficulty;
-	} else if ($topic == "Any topic") {
-		$query = $sql_questionids_anytopic;
-	} else if ($difficulty == "Any difficulty") {
-		$query = $sql_questionids_anydifficulty;
-	} else {
-		$query = $sql_questionids;
-	}
-
-        $questionids = $DB->get_records_sql($query,
-            ['topic' => strval($topic), 'difficulty' => strval($difficulty), 'categoryid' => strval($categoryid)]);
+    $questionids = $db_utils->get_questions($topic, $difficulty, $categoryid);
         // If no question with specified data is found, the question will not be saved
         if (!$questionids) {
             echo '
