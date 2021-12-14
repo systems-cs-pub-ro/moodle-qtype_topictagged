@@ -113,7 +113,7 @@ class qtype_topictagged extends question_type {
             $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
             $form->questiontext = array(
-                'text'	 => $form->settags . "-" . $questiondifficulty,
+                'text'	 => $form->settags . "###__###" . $questiondifficulty,
                 'format' => 0
             );
 
@@ -336,8 +336,9 @@ class qtype_topictagged extends question_type {
 	$isPreview = has_capability('mod/quiz:preview', $context);
 
         $categoryid = $questiondata->categoryobject->id;
-        $topic = strtok($questiondata->questiontext, "-");
-        $difficulty = strtok("\n");
+        $questionNameArray = explode("###__###", $questiondata->questiontext);
+        $topic = $questionNameArray[0];
+        $difficulty = $questionNameArray[1];
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
 
         if ($forcequestionid !== null) {

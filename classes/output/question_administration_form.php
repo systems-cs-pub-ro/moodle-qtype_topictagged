@@ -36,7 +36,7 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Renderer class for list of activities.
  */
-class simple_form extends \moodleform {
+class question_administration_form extends \moodleform {
 
     protected $courseid;
 

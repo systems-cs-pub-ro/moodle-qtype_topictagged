@@ -22,8 +22,10 @@
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+global $CFG;
 
 require('../../../config.php');
+require($CFG->libdir . '/csvlib.class.php');
 require_once('utils.php');
 
 $courseid = required_param('id', PARAM_INT);
@@ -42,13 +44,19 @@ $query = $sql_question_answer_lastused;
 
 $entries = $DB->get_records_sql($query, ['categoryid' => strval($categoryid)]);
 
+// Initiate a new csv_export_writer object
+$csv = new csv_export_writer();
+$csv->set_filename('questions');
+
+// Add file header
+$fields = ['question text', 'question hash', 'last_used tag'];
+$csv->add_data($fields);
+
 /**
  * Iterate trough questions and create csv string
  * Parse every line using parse_string_for_csv function
- * Save all content of the file in a string, to be used with create_file_from_string function
+ * Use moodle csvlib.class.php lib to create the csv file
  */
-$utils = new \qtype_topictagged\utils();
-$str= "question_text,question hash,last_used tag\n";
 foreach($entries as $entry) {
 	$csv_content = array();
 	$plaintext = $entry->question_text . $entry->answers;
@@ -56,33 +64,7 @@ foreach($entries as $entry) {
 	$csv_content[] = hash("sha256", $plaintext, false);
 	$csv_content[] = $entry->last_used;
 
-	$str .= $utils->parse_string_for_csv($csv_content);
+	$csv->add_data($csv_content);
 }
 
-$fs = get_file_storage();
-
-$fileinfo = array(
-'contextid' => $contextid,
-'component' => 'qtype_topictagged',
-'filearea' => 'downloadarea',
-'itemid' => 0,
-'filepath' => '/',
-'filename' => 'Questions.csv'
-);
-
-$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-// If file already exists, delete it
-if ($file) {
-$file->delete();
-}
-
-// Create and send file to user
-$fs->create_file_from_string($fileinfo, $str);
-$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-//var_dump($file); die();
-$options = [];
-$options['dontdie'] = true;
-send_stored_file($file, 0, 0, false, $options);
+$csv->download_file();

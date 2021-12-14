@@ -72,7 +72,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 
 	// Remove all difficulty and last_used tags from the list
 	foreach ($tagstrings as $standardtag) {
-		if (strpos($standardtag, "last_used") !== false)
+		if (strpos($standardtag, "last_used") !== false || strpos($standardtag, "###__###") !== false)
 			unset($tagstrings[$standardtag]);
 
 		foreach ($this->difficultyoptions as $diffoption) {
@@ -98,7 +98,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 	foreach ($mform->_elements[1]->_optGroups as $category) {
 		foreach ($category['options'] as $option) {
 			$value = $option["attr"]["value"];
-			$categoryid = strtok($value, ',');
+			$categoryid = explode(',', $value)[0];
 			array_push($categories, $categoryid);
 		}
 	}
@@ -170,7 +170,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
         $mform = $this->_form;
         $difficulty = $this->difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
-        $categoryid = strtok($fromform["category"], ',');
+        $categoryid = explode(',', $fromform["category"])[0];
 
     $db_utils = new \qtype_topictagged\database_utils();
 	// Create the query

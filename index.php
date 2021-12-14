@@ -27,6 +27,7 @@ require('../../../config.php');
 
 require_once($CFG->libdir . '/questionlib.php');
 require_once('utils.php');
+require_once('./classes/output/question_administration_form.php');
 
 $courseid = required_param('id', PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid]);
@@ -46,14 +47,15 @@ echo $OUTPUT->header();
 
 $utils = new \qtype_topictagged\utils();
 
-$mform = new \qtype_topictagged\output\simple_form($courseid);
+$mform = new \qtype_topictagged\output\question_administration_form($courseid);
 if ($formdata = $mform->get_data()) {
 	if (!empty($formdata->download_button)) {
             // Download CSV
 	
-	    $categoryid = strtok($formdata->download_category, ',');
-	    $contextid = strtok('');
-			
+	    $ids = explode(',', $formdata->download_category);
+	    $categoryid = $ids[0];
+	    $contextid = $ids[1];
+
 	    if ($formdata->download_mode == '0') { // MXML
 		$download_url = question_make_export_url($contextid, $categoryid, 'xml', 'withcategories', 'withcontexts', 'Question.xml');
 
@@ -80,7 +82,7 @@ if ($formdata = $mform->get_data()) {
 	else if (!empty($formdata->update_button)) {
             // Update DB
 
-            $categoryid = strtok($formdata->update_category, ',');
+            $categoryid = explode(',', $formdata->download_category)[0];
             // Get all question from category having the tag `last_used` set
             global $DB;
             $query = '
