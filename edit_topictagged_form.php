@@ -38,6 +38,7 @@ require_once('utils.php');
 class qtype_topictagged_edit_form extends question_edit_form {
     private $difficulty = "";
     private $topic = "";
+    private $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
 
     protected function definition_inner($mform) {
         //Add fields specific to this question type
@@ -47,9 +48,8 @@ class qtype_topictagged_edit_form extends question_edit_form {
     $db_utils = new \qtype_topictagged\database_utils();
 
     //Add difficulty field
-    $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
     $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
-        $difficultyoptions);
+        $this->difficultyoptions);
 
 	// Get all tags used in the current context to use as selection list for the topic
         $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
@@ -75,7 +75,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 		if (strpos($standardtag, "last_used") !== false)
 			unset($tagstrings[$standardtag]);
 
-		foreach ($difficultyoptions as $diffoption) {
+		foreach ($this->difficultyoptions as $diffoption) {
 			if (strcasecmp($standardtag, $diffoption) == 0)
 				unset($tagstrings[$standardtag]);
 		}
@@ -109,7 +109,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 	for ($category = 0; $category < count($categories); $category++) {
 		$difficulties = array();
 		// for each difficulty
-		foreach($difficultyoptions as $difficulty) {
+		foreach($this->difficultyoptions as $difficulty) {
 			$topics = array();
 
 			// for each topic
@@ -168,8 +168,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
         // Check if a question exists having the selected difficulty, topic and category
         global $DB;
         $mform = $this->_form;
-        $difficultyoptions = ['Easy', 'Easy-Medium', 'Medium', 'Medium-Hard', 'Hard', 'Any difficulty'];
-        $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
+        $difficulty = $this->difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
         $categoryid = strtok($fromform["category"], ',');
 
