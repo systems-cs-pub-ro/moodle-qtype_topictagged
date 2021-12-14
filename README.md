@@ -80,7 +80,6 @@ If questions are imported from an external source, using any [format](https://do
 * The difficulty tag must be one from the following list: `Easy`, `Easy-Medium`, `Medium`, `Medium-Hard`, `Hard`.
 * The `last_used` tag is optional (if not present, it will be considered `0`).
   The format is: `last_used:time`, where time is an integer representing time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
-* The topic tags **MUST NOT** include the substring `###__###`, as it is internally used by the plugin as a delimiter between tags.
 
 Details on the import procedure can be found in the [Moodle documentation](https://docs.moodle.org/311/en/Moodle_XML_format).
 

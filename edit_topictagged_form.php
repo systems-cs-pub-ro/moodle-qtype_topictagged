@@ -237,7 +237,7 @@ class qtype_topictagged_edit_form extends question_edit_form {
 	$difficultyoptions[5] = 'Any difficulty';
         $difficulty = $difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
-	$categoryid = explode(',', $fromform["category"])[0];
+        $categoryid = explode(',', $fromform["category"])[0];
 
 	// Create the query
 	// Treat the "Any topic" and "Any difficulty" options separately

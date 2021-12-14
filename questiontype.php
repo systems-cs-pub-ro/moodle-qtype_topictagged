@@ -336,9 +336,9 @@ class qtype_topictagged extends question_type {
 	$isPreview = has_capability('mod/quiz:preview', $context);
 
         $categoryid = $questiondata->categoryobject->id;
-	$questionNameArray = explode("###__###", $questiondata->questiontext);
-	$topic = $questionNameArray[0];
-	$difficulty = $questionNameArray[1];
+        $questionNameArray = explode("###__###", $questiondata->questiontext);
+        $topic = $questionNameArray[0];
+        $difficulty = $questionNameArray[1];
         $available = $this->get_available_questions_with_tags($difficulty, $topic, $categoryid);
 
         if ($forcequestionid !== null) {

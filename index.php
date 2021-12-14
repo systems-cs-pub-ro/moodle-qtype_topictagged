@@ -82,7 +82,7 @@ if ($formdata = $mform->get_data()) {
 	else if (!empty($formdata->update_button)) {
             // Update DB
 
-	    $categoryid = explode(',', $formdata->download_category)[0];
+            $categoryid = explode(',', $formdata->download_category)[0];
             // Get all question from category having the tag `last_used` set
             global $DB;
             $query = '
