@@ -28,25 +28,25 @@ namespace qtype_topictagged;
 defined('MOODLE_INTERNAL') || die();
 
 class utils {
-	/**
-	* Insert data in table.
-	* If data is already present, update
-	*/
-	public function insert_or_update_record($table, $record, $insert_only = False) {
-		global $DB;
+    /**
+    * Insert data in table.
+    * If data is already present, update
+    */
+    public function insert_or_update_record($table, $record, $insert_only = False) {
+        global $DB;
 
         $old_record = $DB->get_record($table, ['questionid' => $record['questionid']]);
 
-		if ($old_record) {
-		    if (!$insert_only) {
-		        $record['id'] = intval($old_record->id);
-		        $DB->update_record($table, $record);
-		    }
-		}
-		else {
-		    $DB->insert_record($table, $record);
-		}
-	}
+        if ($old_record) {
+            if (!$insert_only) {
+                $record['id'] = intval($old_record->id);
+                $DB->update_record($table, $record);
+            }
+        }
+        else {
+            $DB->insert_record($table, $record);
+        }
+    }
 }
 
 class database_utils {
@@ -102,7 +102,7 @@ class database_utils {
                     JOIN {question} question ON question.id = tag_instance.itemid
                 WHERE question.category = :categoryid AND question.hidden = 0
              ';
-       // Actual Query
+        // Actual Query
         // Treat the "Any topic" and "Any difficulty" options separately
         if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
             $query = $sql_questionids_anytopic_anydifficulty;
