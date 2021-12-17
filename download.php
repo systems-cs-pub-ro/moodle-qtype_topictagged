@@ -58,13 +58,14 @@ $csv->add_data($fields);
  * Use moodle csvlib.class.php lib to create the csv file
  */
 foreach($entries as $entry) {
-	$csv_content = array();
-	$plaintext = $entry->question_text . $entry->answers;
-	$csv_content[] = $entry->question_text;
-	$csv_content[] = hash("sha256", $plaintext, false);
-	$csv_content[] = $entry->last_used;
+    $csv_content = array();
+    $plaintext = $entry->question_text . $entry->answers;
+    $csv_content[] = $entry->question_text;
+    $csv_content[] = hash("sha256", $plaintext, false);
+    $csv_content[] = $entry->last_used;
 
-	$csv->add_data($csv_content);
+    $csv->add_data($csv_content);
 }
 
 $csv->download_file();
+
