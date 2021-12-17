@@ -27,19 +27,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/** 
-*This holds the definition of a particular question of this type. 
-*If you load three questions from the question bank, then you will get three instances of 
-*that class. This class is not just the question definition, it can also track the current
-*state of a question as a student attempts it through a question_attempt instance. 
-*/
+/**
+ * This holds the definition of a particular question of this type. 
+ * If you load three questions from the question bank, then you will get three instances of 
+ * that class. This class is not just the question definition, it can also track the current
+ * state of a question as a student attempts it through a question_attempt instance. 
+ */
 
 
 /**
  * Represents a topictagged question.
  *
  * @copyright  2021 Andrei David; Ștefan Jumărea
-
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_topictagged_question extends question_graded_automatically_with_countback {
@@ -48,7 +47,7 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
         return array();
     }
 
-     public function start_attempt(question_attempt_step $step, $variant) {
+    public function start_attempt(question_attempt_step $step, $variant) {
         /* there are 9 occurrances of this method defined in files called question.php a new install of Moodle
         so you are probably going to have to define it */
     }
@@ -65,7 +64,7 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
         /* You might want to check that the user has done something
             before returning true, e.g. clicked a radio button or entered some 
             text 
-            */
+        */
         return true;
     }
 
@@ -80,7 +79,7 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
      * the question will be repeatedly set to incomplete. This is a comparison of
      * the equality of two arrays.
      * Comment from base class:
-     * 
+     *
      * Use by many of the behaviours to determine whether the student's
      * response has changed. This is normally used to determine that a new set
      * of responses can safely be discarded.
@@ -91,7 +90,6 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
      * @return bool whether the two sets of responses are the same - that is
      *      whether the new set of responses can safely be discarded.
      */
-
     public function is_same_response(array $prevresponse, array $newresponse) {
         return question_utils::arrays_same_at_key_missing_is_blank(
                 $prevresponse, $newresponse, 'answer');
@@ -109,7 +107,7 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
     public function get_correct_response() {
         return array();
     }
-    
+
     /**
      * Given a response, reset the parts that are wrong. Relevent in
      * interactive with multiple tries
@@ -156,7 +154,6 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
      * not used in the implementation.
      * @return numeric the fraction that should be awarded for this
      * sequence of response. 
-     * 
      */
     public function compute_final_grade($responses, $totaltries) {
         /*This method is typically where penalty is used. 
@@ -173,3 +170,4 @@ class qtype_topictagged_question extends question_graded_automatically_with_coun
         return 0;
     }
 }
+
