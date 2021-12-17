@@ -35,90 +35,84 @@ $coursecontext = context_course::instance($courseid);
 
 require_login($course);
 require_capability('moodle/course:manageactivities', $coursecontext);
-/*
-$PAGE->set_context($coursecontext);
-$PAGE->set_heading($course->fullname);
-$PAGE->set_pagelayout('course');
-$PAGE->set_pagetype('activity-edit-list');
-$PAGE->set_title("Title"); //get_string('editactivities', 'qtype_topictagged'));
-$PAGE->set_url('/question/type/topictagged/index.php', ['id' => $courseid]);
-*/
+
 echo $OUTPUT->header();
 
 $utils = new \qtype_topictagged\utils();
 
 $mform = new \qtype_topictagged\output\question_administration_form($courseid);
 if ($formdata = $mform->get_data()) {
-	if (!empty($formdata->download_button)) {
-            // Download CSV
-	
-	    $ids = explode(',', $formdata->download_category);
-	    $categoryid = $ids[0];
-	    $contextid = $ids[1];
+    if (!empty($formdata->download_button)) {
+        // Download CSV
 
-	    if ($formdata->download_mode == '0') { // MXML
-		$download_url = question_make_export_url($contextid, $categoryid, 'xml', 'withcategories', 'withcontexts', 'Question.xml');
+        $ids = explode(',', $formdata->download_category);
+        $categoryid = $ids[0];
+        $contextid = $ids[1];
 
-	    }
-	    else if ($formdata->download_mode == '1') { // CSV
-		    $download_url = new moodle_url('/question/type/topictagged/download.php',
-			    array(
-				    'id' => $courseid,
-				    'category' => $categoryid,
-				    'context' => $contextid
-			    ));
+        if ($formdata->download_mode == '0') {
+            // MXML
+            $download_url = question_make_export_url($contextid, $categoryid, 'xml', 'withcategories', 'withcontexts', 'Question.xml');
+        }
+        else if ($formdata->download_mode == '1') {
+            // CSV
+            $download_url = new moodle_url('/question/type/topictagged/download.php',
+                array(
+                    'id' => $courseid,
+                    'category' => $categoryid,
+                    'context' => $contextid
+                ));
+        }
+        $admin_url = new moodle_url('/question/type/topictagged/index.php', array('id' => $courseid));
 
-	    }
-	    $admin_url = new moodle_url('/question/type/topictagged/index.php', array('id' => $courseid));
+        echo '
+            <script>
+                window.location.href = "' . $download_url->out(false) . '";
+                setTimeout( () => { window.location.href = "' . $admin_url->out(false) . '"; }, 500);
+            </script>
+        ';
 
-	    echo '
-		<script>
-		    window.location.href = "' . $download_url->out(false) . '";
-			    setTimeout( () => { window.location.href = "' . $admin_url->out(false) . '"; }, 500);
-		</script>
-	    ';
+    }
+    else if (!empty($formdata->update_button)) {
+        // Update DB
 
-	}
-	else if (!empty($formdata->update_button)) {
-            // Update DB
+        $categoryid = explode(',', $formdata->download_category)[0];
+        // Get all question from category having the tag `last_used` set
+        global $DB;
 
-            $categoryid = explode(',', $formdata->download_category)[0];
-            // Get all question from category having the tag `last_used` set
-            global $DB;
-            $query = '
-                SELECT all_entries.itemid, all_entries.name
-                FROM (
-                    SELECT tag_instance.itemid, tag.name, tag_instance.contextid
-                    FROM {tag} tag
-                    JOIN {tag_instance} tag_instance
-                    ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
-                    AND tag.name like "last_used%"
-                ) AS all_entries
-                JOIN {question} question
-                ON question.id = all_entries.itemid
-                WHERE question.category = ' . $categoryid . ';
-            ';
+        $query = '
+            SELECT all_entries.itemid, all_entries.name
+            FROM (
+                SELECT tag_instance.itemid, tag.name, tag_instance.contextid
+                FROM {tag} tag
+                JOIN {tag_instance} tag_instance
+                ON tag.id = tag_instance.tagid
+            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
+                AND tag.name like "last_used%"
+            ) AS all_entries
+            JOIN {question} question
+            ON question.id = all_entries.itemid
+            WHERE question.category = ' . $categoryid . ';
+        ';
 
-            // iterate through question
-            $records = $DB->get_records_sql($query);
-            foreach ($records as $raw_record) {
-                $record = [];
-                $record['questionid'] = $raw_record->itemid;
-                $record['lastused'] = intval(substr($raw_record->name, 10));
-                $utils->insert_or_update_record('question_topictagged', $record, True);
-            }
+        // iterate through question
+        $records = $DB->get_records_sql($query);
+        foreach ($records as $raw_record) {
+            $record = [];
+            $record['questionid'] = $raw_record->itemid;
+            $record['lastused'] = intval(substr($raw_record->name, 10));
+            $utils->insert_or_update_record('question_topictagged', $record, True);
+        }
 
-            // Display confirmation message and redirect to previous page
-            echo '
-                <script>
-                    alert("Sync successful\n");
-                    window.location.href = "' . $form->returnurl . '";
-                </script>
-            ';
-	    die();
-	}
+        // Display confirmation message and redirect to previous page
+        echo '
+            <script>
+                alert("Sync successful\n");
+                window.location.href = "' . $form->returnurl . '";
+            </script>
+        ';
+        die();
+    }
 }
 echo $mform->render();
-
 echo $OUTPUT->footer();
+
