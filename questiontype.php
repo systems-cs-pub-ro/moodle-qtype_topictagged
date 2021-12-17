@@ -23,8 +23,6 @@
 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
- /*https://docs.moodle.org/dev/Question_types#Question_type_and_question_definition_classes*/
 
 
 defined('MOODLE_INTERNAL') || die();
@@ -59,6 +57,7 @@ class qtype_topictagged extends question_type {
         }
         $excludedqtypes = array();
         $manualqtypes = array();
+
         foreach (question_bank::get_all_qtypes() as $qtype) {
             $quotedname = "'" . $qtype->name() . "'";
             if (!$qtype->is_usable_by_random()) {
@@ -92,34 +91,34 @@ class qtype_topictagged extends question_type {
      * @return object
      */
     public function save_question($question, $form) {
-            // Add Quesiton
+        // Add Quesiton
 
-            global $DB;
-            $form->name = '';
-            list($category) = explode(',', $form->category);
-            $form->tags = array();
+        global $DB;
+        $form->name = '';
+        list($category) = explode(',', $form->category);
+        $form->tags = array();
 
-            if (empty($form->fromtags)) {
-                $form->fromtags = array();
-            }
+        if (empty($form->fromtags)) {
+            $form->fromtags = array();
+        }
 
-            $difficultyoptions = [];
-            $difficultyoptions[0] = 'Easy';
-            $difficultyoptions[1] = 'Easy-Medium';
-            $difficultyoptions[2] = 'Medium';
-            $difficultyoptions[3] = 'Medium-Hard';
-            $difficultyoptions[4] = 'Hard';
-	    $difficultyoptions[5] = 'Any difficulty';
-            $questiondifficulty = $difficultyoptions[$form->setdifficulty];
+        $difficultyoptions = [];
+        $difficultyoptions[0] = 'Easy';
+        $difficultyoptions[1] = 'Easy-Medium';
+        $difficultyoptions[2] = 'Medium';
+        $difficultyoptions[3] = 'Medium-Hard';
+        $difficultyoptions[4] = 'Hard';
+        $difficultyoptions[5] = 'Any difficulty';
+        $questiondifficulty = $difficultyoptions[$form->setdifficulty];
 
-            $form->questiontext = array(
-                'text'	 => $form->settags . "###__###" . $questiondifficulty,
-                'format' => 0
-            );
+        $form->questiontext = array(
+            'text'	 => $form->settags . "###__###" . $questiondifficulty,
+            'format' => 0
+        );
 
-            // Name is not a required field for random questions, but
-            // parent::save_question Assumes that it is.
-            return parent::save_question($question, $form);
+        // Name is not a required field for random questions, but
+        // parent::save_question Assumes that it is.
+        return parent::save_question($question, $form);
     }
 
     public function save_question_options($question) {
@@ -134,7 +133,7 @@ class qtype_topictagged extends question_type {
 
         // We also force the question name to be 'Random (categoryname)'.
         $category = $DB->get_record('question_categories',
-                array('id' => $question->category), '*', MUST_EXIST);
+            array('id' => $question->category), '*', MUST_EXIST);
         $updateobject->topic = $question->settags;
         $updateobject->difficulty = $question->setdifficulty;
 
@@ -163,7 +162,7 @@ class qtype_topictagged extends question_type {
         $a = new stdClass();
         $a->randomname = $randomname;
         $a->questionname = $question->name;
-	$question->name = get_string('selectedby', 'qtype_topictagged', $a);
+        $question->name = get_string('selectedby', 'qtype_topictagged', $a);
     }
 
     /**
@@ -205,112 +204,109 @@ class qtype_topictagged extends question_type {
 
         // vertical join on questionid for questions having the topic, difficulty and category specified
         // left joined with the last_used  attribute
-	// the "Any difficulty" and "Any topics" cases are treated separately
-	if ($topic == "Any topic" && $difficulty == "Any difficulty") {
-
-		$query = '
-		    SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
-		    FROM {question} question
-			LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
-		    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged" AND qtype != "random"
-		    ORDER BY topictagged.lastused;
-		';
-	} else if ($topic == "Any topic") {
-
-		$query = '
-		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
-		    FROM (
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-		    ) as questionids
-			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
-		    ORDER BY topictagged.lastused;
-		';
-	} else if ($difficulty == "Any difficulty") {
-
-		$query = '
-		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
-		    FROM (
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-		    ) as questionids
-			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
-		    ORDER BY topictagged.lastused;
-		';
-	} else {
-
-		$query = '
-		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
-		    FROM (
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-			INTERSECT
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-		    ) as questionids
-			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
-		    ORDER BY topictagged.lastused;
-		';
-	}
+        // the "Any difficulty" and "Any topics" cases are treated separately
+        if ($topic == "Any topic" && $difficulty == "Any difficulty") {
+            $query = '
+                SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM {question} question
+                LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged" AND qtype != "random"
+                ORDER BY topictagged.lastused;
+            ';
+        } else if ($topic == "Any topic") {
+            $query = '
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
+            ';
+        } else if ($difficulty == "Any difficulty") {
+            $query = '
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
+            ';
+        } else {
+            $query = '
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+                INTERSECT
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $topic . '")) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
+            ';
+        }
 
         $questionids = $DB->get_records_sql($query);
 
-	/** If there are no questions found with the coresponding topic and difficulty,
-	 * select a question only with the given difficulty.
-	 * If there are still no questions found, select a random question from the category.
-	 */
-	if (count($questionids) == 0) {
-		$query = '
-		    SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
-		    FROM (
-			SELECT tag_instance.itemid
-			FROM {tag} tag
-			    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-			WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
-			INTERSECT
-			SELECT question.id
-			FROM {tag_instance} tag_instance
-			    JOIN {question} question ON question.id = tag_instance.itemid
-			WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
-		    ) as questionids
-			LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
-		    ORDER BY topictagged.lastused;
-		';
-		$questionids = $DB->get_records_sql($query);
+        /**
+         * If there are no questions found with the coresponding topic and difficulty,
+         * select a question only with the given difficulty.
+         * If there are still no questions found, select a random question from the category.
+         */
+        if (count($questionids) == 0) {
+            $query = '
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                SELECT tag_instance.itemid
+                FROM {tag} tag
+                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper("' . $difficulty . '")) = 0
+                INTERSECT
+                SELECT question.id
+                FROM {tag_instance} tag_instance
+                    JOIN {question} question ON question.id = tag_instance.itemid
+                WHERE question.category = ' . $categoryid . ' AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
+            ';
+            $questionids = $DB->get_records_sql($query);
 
-		if (count($questionids) == 0) {
-			$query = '
-				SELECT question.id "questionid", 0 "lastused"
-				FROM {question} question
-				WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
-				ORDER BY RAND();
-			';
-			$questionids = $DB->get_records_sql($query);
-		}
-	}
+            if (count($questionids) == 0) {
+                $query = '
+                    SELECT question.id "questionid", 0 "lastused"
+                    FROM {question} question
+                    WHERE question.category = ' . $categoryid . ' AND question.hidden = 0 AND question.qtype != "topictagged"
+                    ORDER BY RAND();
+                ';
+                $questionids = $DB->get_records_sql($query);
+            }
+        }
 
         return $questionids;
     }
@@ -330,10 +326,10 @@ class qtype_topictagged extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
-	// determine from trace if this quiz is a preview
-	$contextid = $questiondata->contextid;
-	$context = context::instance_by_id($contextid);
-	$isPreview = has_capability('mod/quiz:preview', $context);
+        // determine from trace if this quiz is a preview
+        $contextid = $questiondata->contextid;
+        $context = context::instance_by_id($contextid);
+        $isPreview = has_capability('mod/quiz:preview', $context);
 
         $categoryid = $questiondata->categoryobject->id;
         $questionNameArray = explode("###__###", $questiondata->questiontext);
@@ -351,15 +347,15 @@ class qtype_topictagged extends question_type {
             }
         }
 
-	if ($isPreview == true) {
-		shuffle($available);
-		$questionid = $available[0];
+        if ($isPreview == true) {
+            shuffle($available);
+            $questionid = $available[0];
 
-		$question = question_bank::load_question($questionid->questionid, $allowshuffle);
-		$this->set_selected_question_name($question, $questiondata->name);
+            $question = question_bank::load_question($questionid->questionid, $allowshuffle);
+            $this->set_selected_question_name($question, $questiondata->name);
 
-		return $question;
-	}
+            return $question;
+        }
 
         foreach ($available as $questionid) {
             if (in_array($questionid, $excludedquestions)) {
@@ -374,30 +370,29 @@ class qtype_topictagged extends question_type {
             $record['questionid'] = $question->id;
             $record['lastused'] = time();
 
-	    $utils = new \qtype_topictagged\utils();
+            $utils = new \qtype_topictagged\utils();
 
-	    if (!$isPreview) {
-	        $utils->insert_or_update_record('question_topictagged', $record);
-		// get all tags
-	        $question_tags = core_tag_tag::get_item_tags_array('core_question', 'question', $questionid->questionid);
+            if (!$isPreview) {
+                $utils->insert_or_update_record('question_topictagged', $record);
+                // get all tags
+                $question_tags = core_tag_tag::get_item_tags_array('core_question', 'question', $questionid->questionid);
 
-	        $old_tag = '';
+                $old_tag = '';
 
-	        // search for `last_used` tag
-	        foreach ($question_tags as $tag) {
-		    if (substr($tag, 0, 10) == 'last_used:') {
-		        $old_tag = $tag;
-		    }
-	        }
-	        if ($old_tag != '') {
-	    	    // delete tag
-		    core_tag_tag::remove_item_tag('core_question', 'question', $questionid->questionid, $old_tag);
-	        }
+                // search for `last_used` tag
+                foreach ($question_tags as $tag) {
+                    if (substr($tag, 0, 10) == 'last_used:') {
+                        $old_tag = $tag;
+                    }
+                }
+                if ($old_tag != '') {
+                    // delete tag
+                    core_tag_tag::remove_item_tag('core_question', 'question', $questionid->questionid, $old_tag);
+                }
 
-	        // add new `last_used` tag
-	        core_tag_tag::add_item_tag('core_question', 'question', $questionid->questionid, $context, 'last_used:' . $record['lastused']);
-	    }
-
+                // add new `last_used` tag
+                core_tag_tag::add_item_tag('core_question', 'question', $questionid->questionid, $context, 'last_used:' . $record['lastused']);
+            }
             return $question;
         }
         return null;
@@ -419,6 +414,7 @@ class qtype_topictagged extends question_type {
         $question = parent::import_from_xml($data, $question, $format, null);
         $format->import_combined_feedback($question, $data, true);
         $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
+
         return $question;
     }
 
@@ -431,3 +427,4 @@ class qtype_topictagged extends question_type {
         return $output;
     }
 }
+
