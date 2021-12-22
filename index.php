@@ -77,25 +77,10 @@ if ($formdata = $mform->get_data()) {
 
         $categoryid = explode(',', $formdata->download_category)[0];
         // Get all question from category having the tag `last_used` set
-        global $DB;
 
-        $query = '
-            SELECT all_entries.itemid, all_entries.name
-            FROM (
-                SELECT tag_instance.itemid, tag.name, tag_instance.contextid
-                FROM {tag} tag
-                JOIN {tag_instance} tag_instance
-                ON tag.id = tag_instance.tagid
-            WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
-                AND tag.name like "last_used%"
-            ) AS all_entries
-            JOIN {question} question
-            ON question.id = all_entries.itemid
-            WHERE question.category = ' . $categoryid . ';
-        ';
-
+        $db_utils = new \qtype_topictagged\database_utils();
         // iterate through question
-        $records = $DB->get_records_sql($query);
+        $records = $db_utils->get_lastused_tagged_questions($categoryid);
         foreach ($records as $raw_record) {
             $record = [];
             $record['questionid'] = $raw_record->itemid;

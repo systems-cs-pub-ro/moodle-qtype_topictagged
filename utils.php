@@ -58,12 +58,12 @@ class database_utils {
 
         // SQL Queries
         $sql_questionids_anytopic_anydifficulty = '
-                SELECT id from {question}
+                SELECT id "questionid" from {question}
                 WHERE category = :categoryid AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
             ';
 
         $sql_questionids_anydifficulty = '
-                SELECT tag_instance.itemid
+                SELECT tag_instance.itemid "questionid"
                 FROM {tag} tag
                     JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
                 WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
@@ -75,7 +75,7 @@ class database_utils {
              ';
 
         $sql_questionids_anytopic = '
-                SELECT tag_instance.itemid
+                SELECT tag_instance.itemid "questionid"
                 FROM {tag} tag
                     JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
                 WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
@@ -87,7 +87,7 @@ class database_utils {
              ';
 
         $sql_questionids = '
-                SELECT tag_instance.itemid
+                SELECT tag_instance.itemid "questionid"
                 FROM {tag} tag
                     JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
                 WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
@@ -102,6 +102,7 @@ class database_utils {
                     JOIN {question} question ON question.id = tag_instance.itemid
                 WHERE question.category = :categoryid AND question.hidden = 0
              ';
+
         // Actual Query
         // Treat the "Any topic" and "Any difficulty" options separately
         if ($difficulty == 'Any difficulty' && $topic == 'Any topic') {
@@ -118,6 +119,25 @@ class database_utils {
             ['topic' => $topic, 'difficulty' => $difficulty, 'categoryid' => $categoryid]);
 
         return $questionids;
+    }
+
+    public function get_lastused_tagged_questions($categoryid) {
+        $query = '
+                SELECT all_entries.itemid, all_entries.name
+                FROM (
+                    SELECT tag_instance.itemid, tag.name, tag_instance.contextid
+                    FROM {tag} tag
+                    JOIN {tag_instance} tag_instance
+                    ON tag.id = tag_instance.tagid
+                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0
+                    AND tag.name like "last_used%"
+                ) AS all_entries
+                JOIN {question} question
+                ON question.id = all_entries.itemid
+                WHERE question.category = :categoryid;
+            ';
+        global $DB;
+        return $DB->get_records_sql($query, ['categoryid' => $categoryid]);
     }
 
     public function count_questions($topic, $difficulty, $categoryid) {
