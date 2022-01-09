@@ -56,4 +56,3 @@ function qtype_topictagged_extend_navigation_course($navigation, $course, $conte
     }
 }
 
-    

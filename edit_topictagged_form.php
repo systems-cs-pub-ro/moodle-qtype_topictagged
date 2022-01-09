@@ -3,6 +3,7 @@
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
+//
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
@@ -43,18 +44,19 @@ class qtype_topictagged_edit_form extends question_edit_form {
     protected function definition_inner($mform) {
         //Add fields specific to this question type
         //remove any that come with the parent class you don't want
-	global $DB, $CFG;
+        global $DB, $CFG;
 
-    $db_utils = new \qtype_topictagged\database_utils();
+        $db_utils = new \qtype_topictagged\database_utils();
 
-    //Add difficulty field
-    $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
-        $this->difficultyoptions);
+        //Add difficulty field
+        $mform->addElement('select', 'setdifficulty', get_string('setdifficulty', 'qtype_topictagged'),
+            $this->difficultyoptions);
 
-	// Get all tags used in the current context to use as selection list for the topic
+        // Get all tags used in the current context to use as selection list for the topic
         $tags = \core_tag_tag::get_tags_by_area_in_contexts('core_question', 'question', $this->contexts->all());
         $tagstrings = [];
-	$tagstrings['Any topic'] = 'Any topic';
+        $tagstrings['Any topic'] = 'Any topic';
+
         foreach ($tags as $tag) {
             $tagstrings[$tag->name] = $tag->name;
         }
@@ -65,71 +67,74 @@ class qtype_topictagged_edit_form extends question_edit_form {
             $standardtags = $DB->get_records('tag',
                     array('isstandard' => 1, 'tagcollid' => core_tag_area::get_collection('core', 'question')),
                     $namefield, 'id,' . $namefield);
+
             foreach ($standardtags as $standardtag) {
-			$tagstrings[$standardtag->$namefield] = $standardtag->$namefield;
+                $tagstrings[$standardtag->$namefield] = $standardtag->$namefield;
             }
         }
 
-	// Remove all difficulty and last_used tags from the list
-	foreach ($tagstrings as $standardtag) {
-		if (strpos($standardtag, "last_used") !== false || strpos($standardtag, "###__###") !== false)
-			unset($tagstrings[$standardtag]);
+        // Remove all difficulty and last_used tags from the list
+        foreach ($tagstrings as $standardtag) {
+            if (strpos($standardtag, "last_used") !== false || strpos($standardtag, "###__###") !== false)
+                unset($tagstrings[$standardtag]);
 
-		foreach ($this->difficultyoptions as $diffoption) {
-			if (strcasecmp($standardtag, $diffoption) == 0)
-				unset($tagstrings[$standardtag]);
-		}
-	}
+            foreach ($this->difficultyoptions as $diffoption) {
+                if (strcasecmp($standardtag, $diffoption) == 0)
+                    unset($tagstrings[$standardtag]);
+            }
+        }
 
-	$tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_topictagged'), $tagstrings);
-	
-	$mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_topictagged');
-	$mform->addHelpButton('settags', 'settags', 'qtype_topictagged');
+        $tags_form = $mform->addElement('select', 'settags',  get_string('settags', 'qtype_topictagged'), $tagstrings);
 
-	// Add text containing the total number of available questions
-	$mform->addElement('html', '
-		<div class="form-control">
-			<label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_topictagged') . '</label>
-			<b> <label id=id_availablequestions_count></label> </b>
-		</div>
-	');
+        $mform->addHelpButton('setdifficulty', 'setdifficulty', 'qtype_topictagged');
+        $mform->addHelpButton('settags', 'settags', 'qtype_topictagged');
 
-	$categories = array();
-	foreach ($mform->_elements[1]->_optGroups as $category) {
-		foreach ($category['options'] as $option) {
-			$value = $option["attr"]["value"];
-			$categoryid = explode(',', $value)[0];
-			array_push($categories, $categoryid);
-		}
-	}
-
-	// query data
-	$questions_number = array();
-	// for each category
-	for ($category = 0; $category < count($categories); $category++) {
-		$difficulties = array();
-		// for each difficulty
-		foreach($this->difficultyoptions as $difficulty) {
-			$topics = array();
-
-			// for each topic
-			foreach($tagstrings as $topic) {
-				// count available questions
-                $value = $db_utils->count_questions($topic, $difficulty, $categories[$category]);
-				$topics[$topic] = $value;
-			}
-			$difficulties[$difficulty] = $topics;
-		}
-		$questions_number[$category] = $difficulties;
-    }
-
-	// export as JSON to a hidden text HTML tag
-	// add JS script
-	$mform->addElement('html', '
-		<noscript id=id_json>' . json_encode($questions_number) . '</noscript>
-                <script src=type/topictagged/display_count.js></script>
+        // Add text containing the total number of available questions
+        $mform->addElement('html', '
+            <div class="form-control">
+                <label id=id_availablequestions > ' . get_string('available_questoins', 'qtype_topictagged') . '</label>
+                <b> <label id=id_availablequestions_count></label> </b>
+            </div>
         ');
- 
+
+        $categories = array();
+        foreach ($mform->_elements[1]->_optGroups as $category) {
+            foreach ($category['options'] as $option) {
+                $value = $option["attr"]["value"];
+                $categoryid = explode(',', $value)[0];
+                array_push($categories, $categoryid);
+            }
+        }
+
+        // query data
+        $questions_number = array();
+
+        // for each category
+        for ($category = 0; $category < count($categories); $category++) {
+            $difficulties = array();
+
+            // for each difficulty
+            foreach($this->difficultyoptions as $difficulty) {
+                $topics = array();
+
+                // for each topic
+                foreach($tagstrings as $topic) {
+                    // count available questions
+                    $value = $db_utils->count_questions($topic, $difficulty, $categories[$category]);
+                    $topics[$topic] = $value;
+                }
+                $difficulties[$difficulty] = $topics;
+            }
+            $questions_number[$category] = $difficulties;
+        }
+
+        // export as JSON to a hidden text HTML tag
+        // add JS script
+        $mform->addElement('html', '
+                <noscript id=id_json>' . json_encode($questions_number) . '</noscript>
+                <script src=type/topictagged/display_count.js></script>
+            ');
+
         //Hide default name, text, id and grade forms
         $mform->addElement('html', '
                 <script>
@@ -147,14 +152,15 @@ class qtype_topictagged_edit_form extends question_edit_form {
     }
 
     public function add_action_buttons($cancel = true, $submitlabel = null) {
-	parent::add_action_buttons($cancel, $submitlabel);
+        parent::add_action_buttons($cancel, $submitlabel);
 
-	$mform = $this->_form;
-	$mform->addElement('html', '
-		<script>
-			document.getElementById("id_updatebutton").style.display = \'none\';
-			document.getElementById("id_tagsheader").style.display = \'none\';
-		</script>');
+        $mform = $this->_form;
+        $mform->addElement('html', '
+            <script>
+                document.getElementById("id_updatebutton").style.display = \'none\';
+                document.getElementById("id_tagsheader").style.display = \'none\';
+            </script>
+        ');
     }
 
     protected function data_preprocessing($question) {
@@ -167,15 +173,17 @@ class qtype_topictagged_edit_form extends question_edit_form {
     public function validation($fromform, $files) {
         // Check if a question exists having the selected difficulty, topic and category
         global $DB;
+
         $mform = $this->_form;
         $difficulty = $this->difficultyoptions[intval($fromform['setdifficulty'])];
         $topic = $fromform["settags"];
         $categoryid = explode(',', $fromform["category"])[0];
 
-    $db_utils = new \qtype_topictagged\database_utils();
-	// Create the query
-	// Treat the "Any topic" and "Any difficulty" options separately
-    $questionids = $db_utils->get_questions($topic, $difficulty, $categoryid);
+        $db_utils = new \qtype_topictagged\database_utils();
+        // Create the query
+        // Treat the "Any topic" and "Any difficulty" options separately
+        $questionids = $db_utils->get_questions($topic, $difficulty, $categoryid);
+
         // If no question with specified data is found, the question will not be saved
         if (!$questionids) {
             echo '
@@ -193,3 +201,4 @@ class qtype_topictagged_edit_form extends question_edit_form {
         return 'topictagged';
     }
 }
+

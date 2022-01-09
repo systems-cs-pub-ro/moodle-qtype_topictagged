@@ -98,26 +98,26 @@ Simply update it with the contents of the proposed question: statement, answers,
         </name>
         <questiontext format="html">
             <text>
-		    Question Text Goes Here
+                Question Text Goes Here
             </text>
         </questiontext>
 
         <tags>
             <tag>
                 <text>
-			First Tag Goes Here
+                    First Tag Goes Here
                 </text>
             </tag>
             <tag>
                 <text>
-			Second Tag Goes Here
+                    Second Tag Goes Here
                 </text>
             </tag>
-	    <tag>
-		<text>
-			Third Tag Goes Here
-		</text>
-	    </tag>
+            <tag>
+                <text>
+                    Third Tag Goes Here
+                </text>
+            </tag>
         </tags>
 
         <answer fraction="100">
@@ -159,3 +159,4 @@ Select the desired file format and the [category](https://docs.moodle.org/311/en
 
 * [QType Template](https://github.com/marcusgreen/moodle-qtype_TEMPLATE/)
 * [Moodle Docs](https://docs.moodle.org/dev/Question_types)
+

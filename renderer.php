@@ -48,11 +48,6 @@ class qtype_topictagged_renderer extends qtype_renderer {
         from one question to another in a quiz and some code to disable the input fields
         once a quesiton is submitted/marked */
 
-        /* if ($qa->get_state() == question_state::$invalid) {
-            $result .= html_writer::nonempty_tag('div',
-                    $question->get_validation_error(array('answer' => $currentanswer)),
-                    array('class' => 'validationerror'));
-        }*/
         return $result;
     }
 
