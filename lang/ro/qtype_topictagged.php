@@ -36,7 +36,7 @@ $string['pluginnamesummary'] = 'Selectează o întrebare din banca de întrebăr
     '<font color=#1C3C70>Previzualizarea întrebării arată o întrebare selectată aleator, cu dificultatea si topicul cerute, fără să afecteze procesul de selecție.</font></p>' .
     '<p><font color=#4287F5><b>Notă: </b></font>' .
     '<font color=#1C3C70>Dacă în timpul testului nu mai există întrebări valabile, se va selecta o întrebare aleatoare</font></p>' .
-    '<p>Pentru mai multe informații consultați <a href="https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme">Documentația</a></p>';
+    '<p>Pentru mai multe informații consultați <a href="https://github.com/systems-cs-pub-ro/moodle-qtype_topictagged#readme">Documentația</a></p>';
 $string['setdifficulty'] = 'Alegeți dificultatea';
 $string['settags'] = 'Alegeți topicul';
 $string['settagsempty'] = 'Nu s-a selectat niciun topic';
@@ -63,5 +63,5 @@ $string['setdifficulty_help'] = 'Alegeți dificultatea întrebării din lista de
 $string['settags_help'] = 'Topicurile sunt taguri definite de utilizatori care sunt adăugate întrebărilor în banca de întrebări. Ele trebuie să își păstreze forma în care au fost scrise când au fost adăugate întrebărilor, altfel nu vor fi găsite întrebări care să respecte condițiile. Topicurile sunt case insensitive și se poate alege un singur topic pentru o întrebare.';
 $string['update_header_help'] = 'Actualizați baza de date locală pentru a include tagul `last_used` al întrebărilor din categoria selectată. Actualizarea TREBUIE făcută de fiecare dată după importarea unui nou set de întrebări.';
 $string['download'] = 'Exportați întrebările';
-$string['download_help'] = 'Pentru a exporta întrebările, selectați categoria din care vreți sa descărcați întrebările, apoi alegeți un format de fișier.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recomandat)</i></b> poate fi ușor reimportat. </li><li><i>CSV(complex)</i> mai ușor de manipulat datele cât timp exsita o copie locală.<br>Fișierul CSV va conține doar întrebările folosite în cel puțin un quiz.<br>Consultați <a href=https://github.com/systems-cs-pub-ro/quiz-manager-moodle#readme> documentația </a> pentru mai multe informații.</li></ol>';
+$string['download_help'] = 'Pentru a exporta întrebările, selectați categoria din care vreți sa descărcați întrebările, apoi alegeți un format de fișier.<ol><li><b><i><a href=https://docs.moodle.org/310/en/Moodle_XML_format> MXML </a> (Recomandat)</i></b> poate fi ușor reimportat. </li><li><i>CSV(complex)</i> mai ușor de manipulat datele cât timp exsita o copie locală.<br>Fișierul CSV va conține doar întrebările folosite în cel puțin un quiz.<br>Consultați <a href=https://github.com/systems-cs-pub-ro/moodle-qtype_topictagged#readme> documentația </a> pentru mai multe informații.</li></ol>';
 $string['available_questoins'] = 'Numărul de întrebări disponibile:';
