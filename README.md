@@ -1,4 +1,4 @@
-# <img src=".media/icon.png" height="50" style="float:left"/> Tagged Question Selector QType
+# <img src=".media/icon.png" height="50" style="float:left"/> Topic Tagged QType
 # Content
 
 0. [Introduction](/README.md#introduction)
@@ -27,7 +27,7 @@ The plugin automatically updates the `last_used` tag after every questions use, 
 ### Installation From Downloaded zip File
 
 You can download the zip from:
-#### latest [(master branch)](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master)
+#### latest [(master branch)](https://github.com/systems-cs-pub-ro/moodle-qtype_topictagged/zipball/master)
 
 Follow the steps below in your Moodle installation (administrative rights are required):
 
@@ -43,7 +43,7 @@ Follow the steps below in your Moodle installation (administrative rights are re
 
 If you are prompted with the message `Plugin type location ${MOODLE_DIR}/question/type is not writable`, you have to copy the files manually to the server file system, using a zip file or [Git](/README.md#manual-installation-using-git).
 
-* Download the [zip file](https://github.com/systems-cs-pub-ro/quiz-manager-moodle/zipball/master).
+* Download the [zip file](https://github.com/systems-cs-pub-ro/moodle-qtype_topictagged/zipball/master).
 * Unzip the file in the correct location: `${MOODLE_DIR}/question/type`.
 * Rename the directory to `topictagged`.
 
@@ -52,7 +52,7 @@ If you are prompted with the message `Plugin type location ${MOODLE_DIR}/questio
 To install using Git, use this command:
 
 ```
-git clone https://github.com/systems-cs-pub-ro/quiz-manager-moodle.git ${MOODLE_DIR}/question/type/topictagged
+git clone https://github.com/systems-cs-pub-ro/moodle-qtype_topictagged.git ${MOODLE_DIR}/question/type/topictagged
 ```
 
 # Adding Questions
