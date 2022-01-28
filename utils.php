@@ -58,49 +58,67 @@ class database_utils {
 
         // SQL Queries
         $sql_questionids_anytopic_anydifficulty = '
-                SELECT id "questionid" from {question}
+                SELECT question.id "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM {question} question
+                LEFT JOIN {question_topictagged} topictagged ON question.id = topictagged.questionid
                 WHERE category = :categoryid AND hidden = 0 AND qtype != "topictagged" AND qtype != "random"
+                ORDER BY topictagged.lastused;
             ';
 
         $sql_questionids_anydifficulty = '
-                SELECT tag_instance.itemid "questionid"
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-                INTERSECT
-                SELECT question.id
-                FROM {tag_instance} tag_instance
-                    JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = :categoryid AND question.hidden = 0
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                    SELECT tag_instance.itemid
+                    FROM {tag} tag
+                        JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                    WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
+                    INTERSECT
+                    SELECT question.id
+                    FROM {tag_instance} tag_instance
+                        JOIN {question} question ON question.id = tag_instance.itemid
+                    WHERE question.category = :categoryid AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
              ';
 
         $sql_questionids_anytopic = '
-                SELECT tag_instance.itemid "questionid"
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-                INTERSECT
-                SELECT question.id
-                FROM {tag_instance} tag_instance
-                    JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = :categoryid AND question.hidden = 0
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                    SELECT tag_instance.itemid
+                    FROM {tag} tag
+                        JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                    WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
+                    INTERSECT
+                    SELECT question.id
+                    FROM {tag_instance} tag_instance
+                        JOIN {question} question ON question.id = tag_instance.itemid
+                    WHERE question.category = :categoryid AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
              ';
 
         $sql_questionids = '
-                SELECT tag_instance.itemid "questionid"
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
-                INTERSECT
-                SELECT tag_instance.itemid
-                FROM {tag} tag
-                    JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
-                WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
-                INTERSECT
-                SELECT question.id
-                FROM {tag_instance} tag_instance
-                    JOIN {question} question ON question.id = tag_instance.itemid
-                WHERE question.category = :categoryid AND question.hidden = 0
+                SELECT questionids.itemid "questionid", NVL(topictagged.lastused, 0) "lastused"
+                FROM (
+                    SELECT tag_instance.itemid
+                    FROM {tag} tag
+                        JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                    WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:difficulty)) = 0
+                    INTERSECT
+                    SELECT tag_instance.itemid
+                    FROM {tag} tag
+                        JOIN {tag_instance} tag_instance ON tag.id = tag_instance.tagid
+                    WHERE strcmp(upper(tag_instance.itemtype), \'QUESTION\') = 0 AND strcmp(upper(tag.name), upper(:topic)) = 0
+                    INTERSECT
+                    SELECT question.id
+                    FROM {tag_instance} tag_instance
+                        JOIN {question} question ON question.id = tag_instance.itemid
+                    WHERE question.category = :categoryid AND question.hidden = 0
+                ) as questionids
+                LEFT JOIN {question_topictagged} topictagged ON questionids.itemid = topictagged.questionid
+                ORDER BY topictagged.lastused;
              ';
 
         // Actual Query
